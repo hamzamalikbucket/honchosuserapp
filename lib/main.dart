@@ -1,0 +1,126 @@
+import 'package:figma_new_project/constants.dart';
+import 'package:figma_new_project/dashBoard/dashboard_screen.dart';
+import 'package:figma_new_project/model/get_cart_model.dart';
+import 'package:figma_new_project/model/home_screen_provider.dart';
+import 'package:figma_new_project/view/screen/splash/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:figma_new_project/injection_container.dart' as di;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'testing_file.dart';
+
+// <meta-data android:name="com.google.android.geo.API_KEY"
+// android:value="AIzaSyAZ2uMIDEsX7EOkeb_la0RXXSVLGyZGInw"/>
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(
+  //     options: FirebaseOptions(apiKey: 'AIzaSyB6Z913sKWrS9nc-c7O0WDx2-Y2KFHjHEA',
+  //         appId: '1:211236216655:android:e843a1b85c71b119036f3a',
+  //         messagingSenderId: '211236216655',
+  //         projectId: 'salon-app-flutter')
+  // );
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: 'AIzaSyBoLcq9ljSXzLeXmO1AQPEdSriWFkvhpVQ',
+          appId: '1:1011606518727:android:86705cef38e96b38f937e2',
+          messagingSenderId: '1011606518727',
+          projectId: 'food-order-flutter-868a3'));
+  await di.init();
+  runApp(
+    const MyApp(),
+  );
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  // This widget is the root of your application.
+  final cartController = Get.put(AddToCartController());
+  String? phone, email, uid, userType;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // getData();
+    setState(() {
+      phone = '';
+      email = '';
+    });
+    getUserData();
+
+    // initPlatformState();
+
+    super.initState();
+  }
+
+  getUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getString('userId') != null) {
+      cartController.fetchCartItems();
+    }
+
+    if (prefs.getString('userPhone') != null && prefs.getString('userEmail') != null) {
+      setState(() {
+        phone = prefs.getString('userPhone');
+        email = prefs.getString('userEmail');
+      });
+    }
+
+    print("MAin user data");
+    print(phone);
+    print(email);
+  }
+
+  Future _onBackPressed() {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Do you want to exit the app?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Honchos',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Montserrat',
+        // This is the theme of your application.
+        //
+        // Try running your application with "flutter run". You'll see the
+        // application has a blue toolbar. Then, without quitting the app, try
+        // changing the primarySwatch below to Colors.green and then invoke
+        // "hot reload" (press "r" in the console where you ran "flutter run",
+        // or simply save your changes to "hot reload" in a Flutter IDE).
+        // Notice that the counter didn't reset back to zero; the application
+        // is not restarted.
+        // primarySwatch: darkRedColor,
+      ),
+       home:
+           //DashBoardScreen(index: 0),
+           phone != '' && email != '' ? DashBoardScreen(index: 0) : SplashScreen(),
+    );
+  }
+}
