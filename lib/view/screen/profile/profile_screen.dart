@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var headers = {
       'Cookie': 'restaurant_session=$cookie'
     };
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/users/$userId'));
+    var request = http.Request('GET', Uri.parse('${apiBaseUrl}users/$userId'));
 
     request.headers.addAll(headers);
 

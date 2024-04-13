@@ -94,7 +94,7 @@ class _DetailScreenState extends State<DetailScreen> {
     };
 
     var request = http.Request(
-        'GET', Uri.parse('${apiBaseUrl}api/products'));
+        'GET', Uri.parse('${apiBaseUrl}products'));
 
     request.headers.addAll(headers);
 
@@ -171,7 +171,7 @@ class _DetailScreenState extends State<DetailScreen> {
   void addToCart(String productId, String quantity1) async {
     var headers = {'Cookie': 'restaurant_session=$cookie'};
     var request = http.MultipartRequest('POST',
-        Uri.parse('${apiBaseUrl}api/add_to_cart'));
+        Uri.parse('${apiBaseUrl}add_to_cart'));
     request.fields.addAll({'product_id': productId, 'quantity': quantity1});
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -445,7 +445,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                         categoriesProductsList[index]
                                             .image
                                             .toString() +
-                                        '${apiBaseUrl}image/product/burger.jpg');
+                                        '${baseUrlMain}image/product/burger.jpg');
                                     return categoriesProductsList[index]
                                                     .categoryId
                                                     .toString() ==

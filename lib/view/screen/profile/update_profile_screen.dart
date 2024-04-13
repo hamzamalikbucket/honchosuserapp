@@ -200,7 +200,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     var headers = {
       'Cookie': 'restaurant_session=$cookie'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}api/edit_user'));
+    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}edit_user'));
     request.fields.addAll({
       'name': '${_nameController.text.toString()}'
     });

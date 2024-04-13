@@ -108,7 +108,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         'Content-Type': 'application/json',
         'Cookie': 'restaurant_session=$cookie'
       };
-      var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/add_to_cart'));
+      var request = http.Request('POST', Uri.parse('${apiBaseUrl}add_to_cart'));
       request.body = json.encode(
         cartBody!.toJson()
       );
@@ -213,7 +213,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       };
 
       var request = http.Request(
-          'GET', Uri.parse('${apiBaseUrl}api/addons'));
+          'GET', Uri.parse('${apiBaseUrl}addons'));
 
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();

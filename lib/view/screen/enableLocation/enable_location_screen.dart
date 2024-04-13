@@ -9,7 +9,6 @@ import 'dart:async';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'dart:io' show Platform;
 
-
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:geolocator/geolocator.dart';
@@ -22,12 +21,10 @@ class EnableLocationScreen extends StatefulWidget {
 }
 
 class _EnableLocationScreenState extends State<EnableLocationScreen> {
-
-
-  bool positionStreamStarted = false,  isLoading = false;
+  bool positionStreamStarted = false, isLoading = false;
   String token = '';
-  double lat = 0.0,long =0.0;
-  int y=0;
+  double lat = 0.0, long = 0.0;
+  int y = 0;
   bool isLoadingLocation = false;
 
   String? _currentAddress;
@@ -71,17 +68,15 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
         .then((Position position) async {
       setState(() => _currentPosition = position);
 
-
-
-      if(_currentPosition != null) {
-
-
-
+      if (_currentPosition != null) {
         var headers = {
           'Content-Type': 'application/json',
           'Cookie': 'restaurant_session=$cookie'
         };
-        var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/location_insert?longitude=${_currentPosition!.latitude.toDouble()}&latitude=${_currentPosition!.longitude.toDouble()}'));
+        var request = http.Request(
+            'POST',
+            Uri.parse(
+                '${apiBaseUrl}location_insert?longitude=${_currentPosition!.latitude.toDouble()}&latitude=${_currentPosition!.longitude.toDouble()}'));
         request.headers.addAll(headers);
         http.StreamedResponse response = await request.send();
         final responseData = await response.stream.bytesToString();
@@ -89,63 +84,68 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
         if (response.statusCode == 200) {
           //getRestaurants();
           print('location Inserted');
-          setState(() {
+           setState(() {
             isLoadingLocation = false;
           });
 
-          var snackBar = SnackBar(content: Text('Location inserted'
-            ,style: TextStyle(color: Colors.white),),
+          var snackBar = SnackBar(
+            content: Text(
+              'Location inserted',
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Colors.green,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChosseRestaurantScreen(long: _currentPosition!.longitude,lat: _currentPosition!.latitude,  status: '', )));
-
-        }
-        else if (response.statusCode == 302) {
+              MaterialPageRoute(
+                  builder: (context) => ChosseRestaurantScreen(
+                        long: _currentPosition!.longitude,
+                        lat: _currentPosition!.latitude,
+                        status: '',
+                      )));
+        } else if (response.statusCode == 302) {
+          setState(() {
+            print("${response.statusCode}  this is 302 error ");
+            isLoadingLocation = false;
+          });
+        } else {
           setState(() {
             isLoadingLocation = false;
           });
+          print("${response.reasonPhrase} this is else error ");
+          var snackBar = SnackBar(
+            content: Text(
+              await response.stream.bytesToString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
-        else {
-          setState(() {
-            isLoadingLocation = false;
-          });
-          print(response.reasonPhrase);
-          var snackBar = SnackBar(content: Text(await response.stream.bytesToString()
-            ,style: TextStyle(color: Colors.white),),
-              backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
-
-
-
-
-
-
-
       }
       print(_currentPosition!.latitude.toString() + ' This is lat ');
-      print(_currentPosition!.longitude.toString()+ ' This is long ');
+      print(_currentPosition!.longitude.toString() + ' This is long ');
       prefs.setDouble('lat', _currentPosition!.latitude);
-      prefs.setDouble('long',_currentPosition!.longitude);
+      prefs.setDouble('long', _currentPosition!.longitude);
       _getAddressFromLatLng(position);
     }).catchError((e) {
-      debugPrint(e);
+      // debugPrint(e);
     });
   }
 
   Future<void> _getAddressFromLatLng(Position position) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<geocoding.Placemark> placemarks = await geocoding.placemarkFromCoordinates(52.2165157, 6.9437819);
-    await geocoding.placemarkFromCoordinates(
-        _currentPosition!.latitude, _currentPosition!.longitude)
+    List<geocoding.Placemark> placemarks =
+        await geocoding.placemarkFromCoordinates(52.2165157, 6.9437819);
+    await geocoding
+        .placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
         .then((List<geocoding.Placemark> placemarks) {
       geocoding.Placemark place = placemarks[0];
       setState(() {
-        _currentAddress = '${place.street}, ${place.subLocality},${place.subAdministrativeArea} ${place.postalCode}';
+        _currentAddress =
+            '${place.street}, ${place.subLocality},${place.subAdministrativeArea} ${place.postalCode}';
       });
       prefs.setString('userAddress', _currentAddress.toString());
     }).catchError((e) {
@@ -153,26 +153,22 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
     });
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
     setState(() {
       isLoadingLocation = false;
       lat = 0.0;
-      long =0.0;
-      y=0;
+      long = 0.0;
+      y = 0;
       token = '';
     });
 
-     _getGeoLocationPosition();
+    _getGeoLocationPosition();
     super.initState();
   }
 
-
-
   Future<Position> _getGeoLocationPosition() async {
-
     bool serviceEnabled;
     LocationPermission permission;
     // Test if location services are enabled.
@@ -183,15 +179,14 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
     }
     permission = await Geolocator.checkPermission();
 
-
-
-
-
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        var snackBar = SnackBar(content: Text('Please give location permission otherwise you will not be able to move further. '
-          ,style: TextStyle(color: Colors.white),),
+        var snackBar = SnackBar(
+          content: Text(
+            'Please give location permission otherwise you will not be able to move further. ',
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Colors.red,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -201,12 +196,8 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
-      }
-      else if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
-
-
-
-      }
+      } else if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {}
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
@@ -214,25 +205,23 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     } else {
-      print(  ' Get Current Location we are in else');
+      print(' Get Current Location we are in else');
       _getCurrentPosition();
     }
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) {
-
-     // Position position;
+    return await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high)
+        .then((value) {
+      // Position position;
       setState(() => _currentPosition = value);
       print(_currentPosition!.latitude.toString() + ' This is lat ');
-      print(_currentPosition!.longitude.toString()+ ' This is long ');
+      print(_currentPosition!.longitude.toString() + ' This is long ');
       _getAddressFromLatLng(value);
 
       return value;
-
     });
-
   }
-
 
   // void getSessionToken() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -280,165 +269,168 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: size.height*0.15,
+              height: size.height * 0.15,
             ),
-
             Center(
-                child: Text('Enable Location', style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Color(0xFF585858), fontSize: 25,fontWeight: FontWeight.bold),)
-            ),
-
+                child: Text(
+              'Enable Location',
+              style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: Color(0xFF585858),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold),
+            )),
             SizedBox(
-              height: size.height*0.025,
+              height: size.height * 0.025,
             ),
-
             Container(
-              width: size.width*0.8,
+              width: size.width * 0.8,
               child: Center(
-                  child: Text('Turn on your location services so we can fetch your exact location for delivery.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      color: darkGreyTextColor, fontSize: 14,),)
-              ),
+                  child: Text(
+                'Turn on your location services so we can fetch your exact location for delivery.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: darkGreyTextColor,
+                  fontSize: 14,
+                ),
+              )),
             ),
-
             SizedBox(
-              height: size.height*0.025,
+              height: size.height * 0.025,
             ),
-
-
             Center(
               child: SizedBox(
                 // height: size.height*0.5,
-                width: size.width*0.8,
-                child: Image.asset('assets/images/enable_location_image.png', fit: BoxFit.scaleDown,
+                width: size.width * 0.8,
+                child: Image.asset(
+                  'assets/images/enable_location_image.png',
+                  fit: BoxFit.scaleDown,
                   // height: size.height*0.5,
-                  width: size.width*0.8,
+                  width: size.width * 0.8,
                   // height: 80,
                   // width: 80,
                 ),
               ),
             ),
-
-
-
             SizedBox(
-              height: size.height*0.12,
+              height: size.height * 0.12,
             ),
-            isLoadingLocation ? Center(child: CircularProgressIndicator(
-              color: darkRedColor,
-              strokeWidth: 1,
-            )) :
-            Padding(
-              padding: const EdgeInsets.only(left: 16,right: 16),
-              child: Container(
-
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                  ],
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: [0.0, 1.0],
-                    colors: [
-                      darkRedColor,
-                      lightRedColor,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+            isLoadingLocation
+                ? Center(
+                    child: CircularProgressIndicator(
+                    color: darkRedColor,
+                    strokeWidth: 1,
+                  ))
+                : Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(0, 4),
+                              blurRadius: 5.0)
+                        ],
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          stops: [0.0, 1.0],
+                          colors: [
+                            darkRedColor,
+                            lightRedColor,
+                          ],
                         ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                      backgroundColor:
-                      MaterialStateProperty.all(Colors.transparent),
-                      // elevation: MaterialStateProperty.all(3),
-                      shadowColor:
-                      MaterialStateProperty.all(Colors.transparent),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            minimumSize:
+                                MaterialStateProperty.all(Size(size.width, 50)),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.transparent),
+                            // elevation: MaterialStateProperty.all(3),
+                            shadowColor:
+                                MaterialStateProperty.all(Colors.transparent),
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              isLoadingLocation = true;
+                            });
+                            _getCurrentPosition();
+
+                            // _getCurrentPosition().then((value) {
+                            //
+                            //
+                            //   Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(builder: (context) => ChosseRestaurantScreen(long: _currentPosition!.longitude,lat: _currentPosition!.latitude,  status: '', )));
+                            //
+                            // });
+                            // LocationPermission permission;
+                            //
+                            // permission = await Geolocator.checkPermission();
+                            //
+                            //
+                            //
+                            //
+                            // if (permission == LocationPermission.denied) {
+                            //   permission = await Geolocator.requestPermission();
+                            //   if (permission == LocationPermission.denied) {
+                            //     var snackBar = SnackBar(content: Text('Please give location permission otherwise you will not be able to move further. '
+                            //       ,style: TextStyle(color: Colors.white),),
+                            //       backgroundColor: Colors.red,
+                            //     );
+                            //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            //     // Permissions are denied, next time you could try
+                            //     // requesting permissions again (this is also where
+                            //     // Android's shouldShowRequestPermissionRationale
+                            //     // returned true. According to Android guidelines
+                            //     // your App should show an explanatory UI now.
+                            //    // return Future.error('Location permissions are denied');
+                            //   }
+                            // }
+                            // else {
+                            //   print(permission.toString()+' wwe are');
+                            //   if (permission == LocationPermission.whileInUse || permission == LocationPermission.always ) {
+                            //
+                            //     myPosition().whenComplete(() {
+                            //       var snackBar = SnackBar(content: Text('Location Enabled Successfully '
+                            //         ,style: TextStyle(color: Colors.white),),
+                            //         backgroundColor: Colors.green,
+                            //       );
+                            //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            //       Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(builder: (context) => ChosseRestaurantScreen(long: long,lat: lat,)));
+                            //     });
+                            //
+                            //
+                            // }
+                            //
+                            // }
+
+                            // _getGeoLocationPosition();
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => ChosseRestaurantScreen()));
+                            //
+                          },
+                          child: Text('Next', style: buttonStyle)),
                     ),
-
-                    onPressed: () async {
-                      setState(() {
-                        isLoadingLocation = true;
-                      });
-                      _getCurrentPosition();
-
-
-
-
-                      // _getCurrentPosition().then((value) {
-                      //
-                      //
-                      //   Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(builder: (context) => ChosseRestaurantScreen(long: _currentPosition!.longitude,lat: _currentPosition!.latitude,  status: '', )));
-                      //
-                      // });
-                      // LocationPermission permission;
-                      //
-                      // permission = await Geolocator.checkPermission();
-                      //
-                      //
-                      //
-                      //
-                      // if (permission == LocationPermission.denied) {
-                      //   permission = await Geolocator.requestPermission();
-                      //   if (permission == LocationPermission.denied) {
-                      //     var snackBar = SnackBar(content: Text('Please give location permission otherwise you will not be able to move further. '
-                      //       ,style: TextStyle(color: Colors.white),),
-                      //       backgroundColor: Colors.red,
-                      //     );
-                      //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      //     // Permissions are denied, next time you could try
-                      //     // requesting permissions again (this is also where
-                      //     // Android's shouldShowRequestPermissionRationale
-                      //     // returned true. According to Android guidelines
-                      //     // your App should show an explanatory UI now.
-                      //    // return Future.error('Location permissions are denied');
-                      //   }
-                      // }
-                      // else {
-                      //   print(permission.toString()+' wwe are');
-                      //   if (permission == LocationPermission.whileInUse || permission == LocationPermission.always ) {
-                      //
-                      //     myPosition().whenComplete(() {
-                      //       var snackBar = SnackBar(content: Text('Location Enabled Successfully '
-                      //         ,style: TextStyle(color: Colors.white),),
-                      //         backgroundColor: Colors.green,
-                      //       );
-                      //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      //       Navigator.push(
-                      //           context,
-                      //           MaterialPageRoute(builder: (context) => ChosseRestaurantScreen(long: long,lat: lat,)));
-                      //     });
-                      //
-                      //
-                      // }
-                      //
-                      // }
-
-                     // _getGeoLocationPosition();
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => ChosseRestaurantScreen()));
-                      //
-                    }, child: Text('Next', style: buttonStyle)),
-              ),
-            ),
+                  ),
             SizedBox(
-              height: size.height*0.05,
+              height: size.height * 0.05,
             ),
             GestureDetector(
               onTap: () {
+                // Navigator.of(context).pop();
                 // if(way == 'email') {
                 //   setState(() {
                 //     way = 'phone';
@@ -450,14 +442,17 @@ class _EnableLocationScreenState extends State<EnableLocationScreen> {
                 // }
               },
               child: Center(
-                  child: Text('Not now', style: TextStyle(color: Color(0xFF585858), fontSize: 15,fontWeight: FontWeight.bold),)
-              ),
+                  child: Text(
+                'Not now',
+                style: TextStyle(
+                    color: Color(0xFF585858),
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+              )),
             ),
             SizedBox(
-              height: size.height*0.05,
+              height: size.height * 0.05,
             ),
-
-
           ],
         ),
       ),

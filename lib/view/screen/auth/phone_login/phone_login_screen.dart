@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:figma_new_project/constants.dart';
@@ -12,9 +11,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class SignInScreen extends StatefulWidget {
-
   SignInScreen();
 
   @override
@@ -27,13 +24,13 @@ class _SignInScreenState extends State<SignInScreen> {
   final FocusNode _passwordFocus = FocusNode();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
-  String? _countryDialCode,smsCode;
-  bool _obscureText = false, isLoadingDialog = false,isVerify = false;
+  String? _countryDialCode, smsCode;
+  bool _obscureText = false, isLoadingDialog = false, isVerify = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> _categories = [];
-  String isCategoryExists = '',phoneNumberWithZero = '';
+  String isCategoryExists = '', phoneNumberWithZero = '';
   String password = '';
- final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController textEditingController = TextEditingController();
   bool hasError = false;
   String currentText = "";
   final formKey = GlobalKey<FormState>();
@@ -56,10 +53,8 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   getCookie() async {
-    var headers = {
-      'Cookie': 'restaurant_session=$cookie'
-    };
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/get_cookie'));
+    var headers = {'Cookie': 'restaurant_session=$cookie'};
+    var request = http.Request('GET', Uri.parse('${apiBaseUrl}get_cookie'));
 
     request.headers.addAll(headers);
 
@@ -67,11 +62,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
-
   }
 
   @override
@@ -86,7 +79,6 @@ class _SignInScreenState extends State<SignInScreen> {
         height: size.height,
         decoration: new BoxDecoration(
           color: Colors.white,
-
         ),
         child: Stack(
           alignment: Alignment.bottomCenter,
@@ -95,139 +87,147 @@ class _SignInScreenState extends State<SignInScreen> {
               children: [
                 Center(
                   child: SizedBox(
-                    height: size.height*0.35,
+                    height: size.height * 0.35,
                     width: size.width,
-                    child: Image.asset('assets/images/sign_in_bg.png', fit: BoxFit.cover,
-                      height: size.height*0.35,
+                    child: Image.asset(
+                      'assets/images/sign_in_bg.png',
+                      fit: BoxFit.cover,
+                      height: size.height * 0.35,
                       width: size.width,
                     ),
                   ),
                 ),
-
-              ],),
-
+              ],
+            ),
             SingleChildScrollView(
               child: Container(
                 height: size.height,
-
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-
-
-                    Container(height: size.height*0.7,
+                    Container(
+                      height: size.height * 0.7,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(topRight: Radius.circular(30),
-                              topLeft: Radius.circular(30)
-                          )
-                      ),
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(30),
+                              topLeft: Radius.circular(30))),
                       child: Column(
                         children: [
-
                           SizedBox(
-                            height: size.height*0.05,
+                            height: size.height * 0.05,
                           ),
-
                           Center(
                             child: SizedBox(
                               height: 80,
                               width: 120,
-                              child: Image.asset('assets/images/welcome_logo.png', fit: BoxFit.scaleDown,
+                              child: Image.asset(
+                                'assets/images/welcome_logo.png',
+                                fit: BoxFit.scaleDown,
                                 height: 80,
-                                width: 120,),
+                                width: 120,
+                              ),
                             ),
                           ),
-
-
-
                           SizedBox(
-                            height: size.height*0.05,
+                            height: size.height * 0.05,
                           ),
-
                           Padding(
-                            padding: const EdgeInsets.only(left: 16,right: 16),
+                            padding: const EdgeInsets.only(left: 16, right: 16),
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: lightButtonGreyColor,//Theme.of(context).cardColor,
+                                color:
+                                    lightButtonGreyColor, //Theme.of(context).cardColor,
                                 //boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5)],
                               ),
                               child: Column(children: [
                                 Row(children: [
                                   CountryCodePicker(
-                                    onChanged: (code){
+                                    onChanged: (code) {
                                       setState(() {
                                         _countryDialCode = code.toString();
                                       });
-                                      print(code.toString() + ' This is the code');
-                                      },
+                                      print(code.toString() +
+                                          ' This is the code');
+                                    },
                                     // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                   // initialSelection: 'SA',
+                                    // initialSelection: 'SA',
                                     favorite: const ['+92'],
                                     initialSelection: '+27',
-                                    countryFilter: [ 'SS','+27','+92'],
+                                    countryFilter: ['SS', '+27', '+92'],
                                     //countryFilter: const ['IT', 'FR'],
                                     // flag can be styled with BoxDecoration's `borderRadius` and `shape` fields
                                     flagDecoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(7),
                                     ),
                                   ),
-                                  Expanded(flex: 1, child:
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: lightButtonGreyColor,
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: TextField(
-                                      // maxLines: widget.maxLines,
-                                      controller: _phoneController,
-                                      focusNode: _phoneFocus,
-                                      // textAlign: widget.textAlign,
-                                      // style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge, color: Colors.black),
-                                      textInputAction: TextInputAction.done,
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: lightButtonGreyColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: TextField(
+                                        // maxLines: widget.maxLines,
+                                        controller: _phoneController,
+                                        focusNode: _phoneFocus,
+                                        // textAlign: widget.textAlign,
+                                        // style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge, color: Colors.black),
+                                        textInputAction: TextInputAction.done,
 
-                                      keyboardType: TextInputType.visiblePassword,
-                                      cursorColor: Theme.of(context).primaryColor,
-                                      //textCapitalization: widget.capitalization,
-                                      //enabled: widget.isEnabled,
-                                      autofocus: false,
-                                      obscureText: false,
-                                      inputFormatters:
-                                      <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
-                                      // : widget.isAmount ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))] : widget.isNumber ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))] : null,
-                                      decoration: InputDecoration(
-
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                            borderSide: BorderSide(style: BorderStyle.none, width: 0),
-                                          ),
-                                          isDense: true,
-                                          labelStyle: TextStyle(color: Colors.black),
-                                          hintText: '12345678901',//'password'.tr,
-                                          fillColor: lightButtonGreyColor,//Theme.of(context).cardColor,
-                                          // hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).hintColor),
-                                          filled: true,
-                                          // prefixText: '+1 | ',
-                                          prefixStyle: TextStyle(color: darkGreyTextColor)
-                                        // prefixIcon: widget.prefixIcon != null ? Padding(
-                                        //   padding: EdgeInsets.symmetric(horizontal: widget.prefixSize),
-                                        //   child: Image.asset(widget.prefixIcon, height: 20, width: 20),
-                                        // ) : null,
-                                        // suffixIcon: IconButton(
-                                        //   icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: Theme.of(context).hintColor.withOpacity(0.3)),
-                                        //   onPressed: () {
-                                        //     setState(() {
-                                        //       _obscureText = !_obscureText;
-                                        //     });
-                                        //   },
-                                        // ),
+                                        keyboardType:
+                                            TextInputType.visiblePassword,
+                                        cursorColor:
+                                            Theme.of(context).primaryColor,
+                                        //textCapitalization: widget.capitalization,
+                                        //enabled: widget.isEnabled,
+                                        autofocus: false,
+                                        obscureText: false,
+                                        inputFormatters: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp('[0-9]'))
+                                        ],
+                                        // : widget.isAmount ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))] : widget.isNumber ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))] : null,
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                  style: BorderStyle.none,
+                                                  width: 0),
+                                            ),
+                                            isDense: true,
+                                            labelStyle:
+                                                TextStyle(color: Colors.black),
+                                            hintText:
+                                                '12345678901', //'password'.tr,
+                                            fillColor:
+                                                lightButtonGreyColor, //Theme.of(context).cardColor,
+                                            // hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).hintColor),
+                                            filled: true,
+                                            // prefixText: '+1 | ',
+                                            prefixStyle: TextStyle(
+                                                color: darkGreyTextColor)
+                                            // prefixIcon: widget.prefixIcon != null ? Padding(
+                                            //   padding: EdgeInsets.symmetric(horizontal: widget.prefixSize),
+                                            //   child: Image.asset(widget.prefixIcon, height: 20, width: 20),
+                                            // ) : null,
+                                            // suffixIcon: IconButton(
+                                            //   icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: Theme.of(context).hintColor.withOpacity(0.3)),
+                                            //   onPressed: () {
+                                            //     setState(() {
+                                            //       _obscureText = !_obscureText;
+                                            //     });
+                                            //   },
+                                            // ),
+                                            ),
+                                        // onSubmitted: (text) => (GetPlatform.isWeb && authController.acceptTerms)
+                                        //     ? _login(authController, _countryDialCode) : null,
+                                        // onChanged: widget.onChanged,
                                       ),
-                                      // onSubmitted: (text) => (GetPlatform.isWeb && authController.acceptTerms)
-                                      //     ? _login(authController, _countryDialCode) : null,
-                                      // onChanged: widget.onChanged,
                                     ),
-                                  ),
                                     // CustomTextField(
                                     //   hintText: 'phone'.tr,
                                     //   controller: _phoneController,
@@ -236,234 +236,249 @@ class _SignInScreenState extends State<SignInScreen> {
                                     //   inputType: TextInputType.phone,
                                     //   divider: false,
                                     // )
-
                                   ),
                                 ]),
                               ]),
                             ),
                           ),
                           SizedBox(
-                            height: size.height*0.05,
+                            height: size.height * 0.05,
                           ),
-                          isLoadingDialog ? Center(child: CircularProgressIndicator(
-                            color: darkRedColor,
-                            strokeWidth: 1,
-                          )) :
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16,right: 16),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                                ],
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  stops: [0.0, 1.0],
-                                  colors: [
-                                    darkRedColor,
-                                    lightRedColor,
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                          isLoadingDialog
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                  color: darkRedColor,
+                                  strokeWidth: 1,
+                                ))
+                              : Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 16, right: 16),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black26,
+                                            offset: Offset(0, 4),
+                                            blurRadius: 5.0)
+                                      ],
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        stops: [0.0, 1.0],
+                                        colors: [
+                                          darkRedColor,
+                                          lightRedColor,
+                                        ],
                                       ),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                                    backgroundColor:
-                                    MaterialStateProperty.all(Colors.transparent),
-                                    // elevation: MaterialStateProperty.all(3),
-                                    shadowColor:
-                                    MaterialStateProperty.all(Colors.transparent),
+                                    child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
+                                          minimumSize:
+                                              MaterialStateProperty.all(
+                                                  Size(size.width, 50)),
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.transparent),
+                                          // elevation: MaterialStateProperty.all(3),
+                                          shadowColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.transparent),
+                                        ),
+                                        onPressed: () async {
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(builder: (context) => EnableLocationScreen()));
+
+                                          if (_phoneController.text.isEmpty) {
+                                            var snackBar = SnackBar(
+                                                backgroundColor: Colors.red,
+                                                content: Text(
+                                                  'Phone number is required',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ));
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+                                          } else {
+                                            if (_phoneController.text.length <
+                                                7) {
+                                              var snackBar = SnackBar(
+                                                  backgroundColor: Colors.red,
+                                                  content: Text(
+                                                    'Wrong phone number',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ));
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
+                                            } else {
+                                              if (_phoneController
+                                                      .text.isNotEmpty &&
+                                                  _phoneController.text
+                                                          .toString()[0] ==
+                                                      '0') {
+                                                setState(() {
+                                                  phoneNumberWithZero =
+                                                      _phoneController.text
+                                                          .toString();
+                                                });
+
+                                                print(
+                                                    "$phoneNumberWithZero The string start with '0'");
+                                              } else {
+                                                phoneNumberWithZero = '0' +
+                                                    _phoneController.text
+                                                        .toString();
+                                                print(
+                                                    "$phoneNumberWithZero The string does not start with '0'");
+                                              }
+
+                                              setState(() {
+                                                isLoadingDialog = true;
+                                              });
+
+                                              // await FirebaseFirestore.instance.collection('Users').get().then((value) {
+                                              //
+                                              //   if(value.docs.isNotEmpty) {
+                                              //
+                                              //     for(int i=0 ;i<value.docs.length; i++) {
+                                              //
+                                              //       print('user data');
+                                              //       if(value.docs[i]['phone'] == _countryDialCode!+_phoneController.text.toString().trim()) {
+                                              //         print('user age in if of current user ');
+                                              //         //   print(element['age']);
+                                              //         setState(() {
+                                              //           isCategoryExists = 'yes';
+                                              //         });
+                                              //       }
+                                              //
+                                              //       if( i == value.docs.length-1) {
+                                              //
+                                              //         if(isCategoryExists == 'yes') {
+                                              //           print(_countryDialCode!+_phoneController.text.trim().toString() + ' Phone number');
+                                              //           prefs.setString('userPhone', _countryDialCode!+_phoneController.text.trim());
+                                              //
+                                              //           setState(() {
+                                              //             isLoadingDialog = false;
+                                              //             isCategoryExists = 'yes';
+                                              //           });
+                                              //           Navigator.push(context, MaterialPageRoute(
+                                              //               builder: (context) => LoginScreen()
+                                              //           ));
+                                              //         } else {
+                                              //           registerUser('${_countryDialCode!+_phoneController.text.trim()}',context);
+                                              //         }
+                                              //
+                                              //
+                                              //       }
+                                              //
+                                              //     }
+                                              //
+                                              //   } else {
+                                              //     registerUser('${_countryDialCode!+_phoneController.text.trim()}',context);
+                                              //   }
+                                              //
+                                              // });
+
+                                              print(_countryDialCode! +
+                                                  _phoneController.text
+                                                      .trim()
+                                                      .toString() +
+                                                  ' Phone number');
+                                              prefs.setString(
+                                                  'userPhone',
+                                                  _countryDialCode! +
+                                                      phoneNumberWithZero);
+
+                                              FirebaseFirestore.instance
+                                                  .collection('Users')
+                                                  .where('phone',
+                                                      isEqualTo:
+                                                          _countryDialCode! +
+                                                              phoneNumberWithZero)
+                                                  .get()
+                                                  .then((value) {
+                                                if (value.docs.isNotEmpty) {
+                                                  setState(() {
+                                                    isLoadingDialog = false;
+                                                    isCategoryExists = 'yes';
+                                                  });
+                                                  // var snackBar = SnackBar(content: Text('number exists'
+                                                  //   ,style: TextStyle(color: Colors.white),),
+                                                  //   backgroundColor: Colors.red,
+                                                  // );
+                                                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                  prefs.setString(
+                                                      'userPhone',
+                                                      _countryDialCode! +
+                                                          phoneNumberWithZero);
+                                                  print('number exists');
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              LoginScreen()));
+                                                } else {
+                                                  // setState(() {
+                                                  //   isLoadingDialog = false;
+                                                  // });
+                                                  // var snackBar = SnackBar(content: Text('no number not exists'
+                                                  //   ,style: TextStyle(color: Colors.white),),
+                                                  //   backgroundColor: Colors.red,
+                                                  // );
+                                                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                  print('no number not exists');
+                                                  registerUser(
+                                                      '${_countryDialCode! + _phoneController.text.trim()}',
+                                                      context);
+                                                }
+                                              });
+                                            }
+
+                                            // var snackBar = SnackBar(content: Text('Hello World'));
+                                            // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                          }
+                                        },
+                                        child:
+                                            Text('Next', style: buttonStyle)),
                                   ),
-                                  onPressed: () async {
-                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(builder: (context) => EnableLocationScreen()));
-
-                                    if(_phoneController.text.isEmpty) {
-                                      var snackBar = SnackBar(
-                                          backgroundColor: Colors.red,
-                                          content: Text('Phone number is required',style: TextStyle(color: Colors.white),));
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    }
-
-
-                                    else {
-
-                                      if(_phoneController.text.length < 7) {
-                                        var snackBar = SnackBar(
-                                            backgroundColor: Colors.red,
-                                            content: Text('Wrong phone number',style: TextStyle(color: Colors.white),));
-                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                      } else {
-
-                                        if (_phoneController.text.isNotEmpty && _phoneController.text.toString()[0] == '0') {
-                                          setState(() {
-                                            phoneNumberWithZero = _phoneController.text.toString();
-                                          });
-
-                                          print("$phoneNumberWithZero The string start with '0'");
-
-                                        } else {
-                                          phoneNumberWithZero = '0'+_phoneController.text.toString();
-                                          print("$phoneNumberWithZero The string does not start with '0'");
-                                        }
-
-
-                                        setState(() {
-                                          isLoadingDialog = true;
-                                        });
-
-
-                                        // await FirebaseFirestore.instance.collection('Users').get().then((value) {
-                                        //
-                                        //   if(value.docs.isNotEmpty) {
-                                        //
-                                        //     for(int i=0 ;i<value.docs.length; i++) {
-                                        //
-                                        //       print('user data');
-                                        //       if(value.docs[i]['phone'] == _countryDialCode!+_phoneController.text.toString().trim()) {
-                                        //         print('user age in if of current user ');
-                                        //         //   print(element['age']);
-                                        //         setState(() {
-                                        //           isCategoryExists = 'yes';
-                                        //         });
-                                        //       }
-                                        //
-                                        //       if( i == value.docs.length-1) {
-                                        //
-                                        //         if(isCategoryExists == 'yes') {
-                                        //           print(_countryDialCode!+_phoneController.text.trim().toString() + ' Phone number');
-                                        //           prefs.setString('userPhone', _countryDialCode!+_phoneController.text.trim());
-                                        //
-                                        //           setState(() {
-                                        //             isLoadingDialog = false;
-                                        //             isCategoryExists = 'yes';
-                                        //           });
-                                        //           Navigator.push(context, MaterialPageRoute(
-                                        //               builder: (context) => LoginScreen()
-                                        //           ));
-                                        //         } else {
-                                        //           registerUser('${_countryDialCode!+_phoneController.text.trim()}',context);
-                                        //         }
-                                        //
-                                        //
-                                        //       }
-                                        //
-                                        //     }
-                                        //
-                                        //   } else {
-                                        //     registerUser('${_countryDialCode!+_phoneController.text.trim()}',context);
-                                        //   }
-                                        //
-                                        // });
-
-                                        print(_countryDialCode!+_phoneController.text.trim().toString() + ' Phone number');
-                                        prefs.setString('userPhone', _countryDialCode!+phoneNumberWithZero);
-
-
-
-
-                                        FirebaseFirestore.instance.collection('Users').where('phone', isEqualTo: _countryDialCode!+phoneNumberWithZero).get().then((value) {
-
-
-                                          if(value.docs.isNotEmpty) {
-                                            setState(() {
-                                              isLoadingDialog = false;
-                                              isCategoryExists = 'yes';
-                                            });
-                                            // var snackBar = SnackBar(content: Text('number exists'
-                                            //   ,style: TextStyle(color: Colors.white),),
-                                            //   backgroundColor: Colors.red,
-                                            // );
-                                            // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                            prefs.setString('userPhone', _countryDialCode!+phoneNumberWithZero);
-                                            print('number exists');
-                                            Navigator.pushReplacement(context, MaterialPageRoute(
-                                                builder: (context) => LoginScreen()
-                                            ));
-                                          }
-                                          else {
-                                            // setState(() {
-                                            //   isLoadingDialog = false;
-                                            // });
-                                            // var snackBar = SnackBar(content: Text('no number not exists'
-                                            //   ,style: TextStyle(color: Colors.white),),
-                                            //   backgroundColor: Colors.red,
-                                            // );
-                                            // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                             print('no number not exists');
-                                            registerUser('${_countryDialCode!+_phoneController.text.trim()}',context);
-
-                                          }
-
-                                        });
-
-
-
-
-                                      }
-
-
-
-
-
-
-                                      // var snackBar = SnackBar(content: Text('Hello World'));
-                                      // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                                    }
-
-
-                                  }, child: Text('Next', style: buttonStyle)),
-                            ),
-                          ),
-
+                                ),
                           SizedBox(
-                            height: size.height*0.05,
+                            height: size.height * 0.05,
                           ),
-
-
-
-
                         ],
                       ),
-
                     ),
-
-
-                  ],),
+                  ],
+                ),
               ),
             ),
-
           ],
         ),
-
-
-
-
       ),
     );
   }
 
-  Future registerUser(String mobile, BuildContext context) async{
+  Future registerUser(String mobile, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final size = MediaQuery.of(context).size;
     FirebaseAuth _auth = FirebaseAuth.instance;
 
-
     _auth.verifyPhoneNumber(
-        phoneNumber: mobile,
-        timeout: Duration(seconds: 60),
-      verificationFailed: ( authException){
+      phoneNumber: mobile,
+      timeout: Duration(seconds: 60),
+      verificationFailed: (authException) {
         print('WE are here in code sent verificationFailed');
 
         setState(() {
@@ -474,66 +489,71 @@ class _SignInScreenState extends State<SignInScreen> {
             useSafeArea: false,
             barrierDismissible: true,
             builder: (context) => WillPopScope(
-              onWillPop: () async => true,
-              child: StatefulBuilder(
-                  builder: (context, setState) {
+                  onWillPop: () async => true,
+                  child: StatefulBuilder(builder: (context, setState) {
                     return AlertDialog(
                       insetPadding: EdgeInsets.all(0),
                       content: SingleChildScrollView(
                         child: Column(
                           children: [
                             SizedBox(
-                              height: size.height*0.03,
+                              height: size.height * 0.03,
                             ),
-
                             Container(
-                              width: size.width*0.8,
+                              width: size.width * 0.8,
                               child: Row(
                                 children: [
-
-                                  IconButton(onPressed: () {
-
-                                    Navigator.pop(context);
-
-                                  }, icon: Icon(Icons.arrow_back, size: 20, color: Colors.black,))
-
+                                  IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back,
+                                        size: 20,
+                                        color: Colors.black,
+                                      ))
                                 ],
                               ),
                             ),
-
                             SizedBox(
-                              height: size.height*0.035,
+                              height: size.height * 0.035,
                             ),
-
                             Center(
-                                child: Text('Verify Phone Number', style: TextStyle(color: Color(0xFF585858), fontSize: 25,fontWeight: FontWeight.bold),)
-                            ),
-
+                                child: Text(
+                              'Verify Phone Number',
+                              style: TextStyle(
+                                  color: Color(0xFF585858),
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            )),
                             SizedBox(
-                              height: size.height*0.025,
+                              height: size.height * 0.025,
                             ),
-
                             Container(
-                              width: size.width*0.8,
+                              width: size.width * 0.8,
                               child: Center(
-                                  child: Text('Unable to verify. Try again.',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.red, fontSize: 14,),)
-                              ),
+                                  child: Text(
+                                'Unable to verify. Try again.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14,
+                                ),
+                              )),
                             ),
-
                             SizedBox(
-                              height: size.height*0.05,
+                              height: size.height * 0.05,
                             ),
-
                             Padding(
-                              padding: const EdgeInsets.only(left: 16,right: 16),
+                              padding:
+                                  const EdgeInsets.only(left: 16, right: 16),
                               child: Container(
-
                                 decoration: BoxDecoration(
                                   boxShadow: [
                                     BoxShadow(
-                                        color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+                                        color: Colors.black26,
+                                        offset: Offset(0, 4),
+                                        blurRadius: 5.0)
                                   ],
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,
@@ -548,48 +568,45 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                                 child: ElevatedButton(
                                     style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
                                         ),
                                       ),
-                                      minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
+                                      minimumSize: MaterialStateProperty.all(
+                                          Size(size.width, 50)),
                                       backgroundColor:
-                                      MaterialStateProperty.all(Colors.transparent),
+                                          MaterialStateProperty.all(
+                                              Colors.transparent),
                                       // elevation: MaterialStateProperty.all(3),
-                                      shadowColor:
-                                      MaterialStateProperty.all(Colors.transparent),
+                                      shadowColor: MaterialStateProperty.all(
+                                          Colors.transparent),
                                     ),
-
                                     onPressed: () async {
                                       Navigator.pop(context);
                                       //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
-
-                                    }, child: Text('Cancel', style: buttonStyle)),
+                                    },
+                                    child: Text('Cancel', style: buttonStyle)),
                               ),
                             ),
                             SizedBox(
-                              height: size.height*0.05,
+                              height: size.height * 0.05,
                             ),
-
-
-
                           ],
                         ),
                       ),
-
                     );
                   }),
-            )
-        );
+                ));
         // var snackBar = SnackBar(
         //     backgroundColor: Colors.red,
         //     content: Text('Wrong code',style: TextStyle(color: Colors.white),));
         // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         // print(authException.message);
       },
-
-      codeSent: (String? verificationId,int? code){
+      codeSent: (String? verificationId, int? code) {
         //show dialog to take input from the user
         setState(() {
           isLoadingDialog = false;
@@ -600,719 +617,803 @@ class _SignInScreenState extends State<SignInScreen> {
             useSafeArea: false,
             barrierDismissible: false,
             builder: (context) => WillPopScope(
-              onWillPop: () async => false,
-              child: StatefulBuilder(
-                  builder: (context, setState) {
+                  onWillPop: () async => false,
+                  child: StatefulBuilder(builder: (context, setState) {
                     return AlertDialog(
-        insetPadding: EdgeInsets.all(0),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: size.height*0.03,
-              ),
+                      insetPadding: EdgeInsets.all(0),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: size.height * 0.03,
+                            ),
 
-              Container(
-                width: size.width*0.8,
-                child: Row(
-                  children: [
+                            Container(
+                              width: size.width * 0.8,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back,
+                                        size: 20,
+                                        color: Colors.black,
+                                      ))
+                                ],
+                              ),
+                            ),
 
-                    IconButton(onPressed: () {
+                            SizedBox(
+                              height: size.height * 0.035,
+                            ),
 
-                      Navigator.pop(context);
+                            Center(
+                                child: Text(
+                              'Verify Phone Number',
+                              style: TextStyle(
+                                  color: Color(0xFF585858),
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            )),
 
-                    }, icon: Icon(Icons.arrow_back, size: 20, color: Colors.black,))
+                            SizedBox(
+                              height: size.height * 0.025,
+                            ),
 
-                  ],
-                ),
-              ),
+                            Container(
+                              width: size.width * 0.8,
+                              child: Center(
+                                  child: Text(
+                                'Enter the 4 digit code received on your entered phone number.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: darkGreyTextColor,
+                                  fontSize: 14,
+                                ),
+                              )),
+                            ),
 
-              SizedBox(
-                height: size.height*0.035,
-              ),
+                            SizedBox(
+                              height: size.height * 0.025,
+                            ),
 
+                            Center(
+                              child: SizedBox(
+                                // height: size.height*0.5,
+                                width: size.width * 0.8,
+                                child: Image.asset(
+                                  'assets/images/otp_screen.png',
+                                  fit: BoxFit.scaleDown,
+                                  // height: size.height*0.5,
+                                  width: size.width * 0.8,
+                                  // height: 80,
+                                  // width: 80,
+                                ),
+                              ),
+                            ),
 
-              Center(
-                  child: Text('Verify Phone Number', style: TextStyle(color: Color(0xFF585858), fontSize: 25,fontWeight: FontWeight.bold),)
-              ),
+                            SizedBox(
+                              height: size.height * 0.03,
+                            ),
 
-              SizedBox(
-                height: size.height*0.025,
-              ),
+                            Form(
+                              key: formKey,
+                              child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0.0, horizontal: 0),
+                                  child: PinCodeTextField(
+                                    autoDisposeControllers: false,
+                                    backgroundColor: Colors.white,
+                                    appContext: context,
+                                    pastedTextStyle: TextStyle(
+                                      color: Colors.green.shade600,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    length: 6,
+                                    obscureText: true,
+                                    obscuringCharacter: '*',
+                                    // obscuringWidget: const FlutterLogo(
+                                    //   size: 24,
+                                    // ),
+                                    blinkWhenObscuring: true,
+                                    animationType: AnimationType.fade,
+                                    validator: (v) {
+                                      if (v!.length < 3) {
+                                        return "";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    pinTheme: PinTheme(
+                                      selectedColor: Colors.black,
+                                      activeColor: Colors.white,
+                                      selectedFillColor: Colors.white,
+                                      shape: PinCodeFieldShape.box,
+                                      inactiveFillColor: Colors.white,
+                                      inactiveColor: Colors.black,
+                                      borderRadius: BorderRadius.circular(5),
+                                      borderWidth: 0.5,
+                                      fieldHeight: 40,
+                                      fieldWidth: 35,
+                                      activeFillColor: Colors.white,
+                                    ),
+                                    cursorColor: Colors.black,
+                                    animationDuration:
+                                        const Duration(milliseconds: 300),
+                                    enableActiveFill: true,
+                                    //  errorAnimationController: errorController,
+                                    controller: textEditingController,
+                                    keyboardType: TextInputType.number,
+                                    boxShadows: const [
+                                      BoxShadow(
+                                        offset: Offset(0, 1),
+                                        color: Colors.black12,
+                                        blurRadius: 10,
+                                      )
+                                    ],
+                                    onCompleted: (v) {
+                                      debugPrint("Completed");
+                                    },
+                                    // onTap: () {
+                                    //   print("Pressed");
+                                    // },
+                                    onChanged: (value) {
+                                      debugPrint(value);
+                                      setState(() {
+                                        currentText = value;
+                                      });
+                                    },
+                                    beforeTextPaste: (text) {
+                                      debugPrint("Allowing to paste $text");
+                                      //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                                      //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                                      return true;
+                                    },
+                                  )),
+                            ),
 
-              Container(
-                width: size.width*0.8,
-                child: Center(
-                    child: Text('Enter the 4 digit code received on your entered phone number.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: darkGreyTextColor, fontSize: 14,),)
-                ),
-              ),
+                            SizedBox(
+                              height: size.height * 0.03,
+                            ),
 
-              SizedBox(
-                height: size.height*0.025,
-              ),
-
-
-              Center(
-                child: SizedBox(
-                  // height: size.height*0.5,
-                  width: size.width*0.8,
-                  child: Image.asset('assets/images/otp_screen.png', fit: BoxFit.scaleDown,
-                    // height: size.height*0.5,
-                    width: size.width*0.8,
-                    // height: 80,
-                    // width: 80,
-                  ),
-                ),
-              ),
-
-              SizedBox(
-                height: size.height*0.03,
-              ),
-
-
-
-              Form(
-                key: formKey,
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 0.0, horizontal: 0),
-                    child: PinCodeTextField(
-                      autoDisposeControllers: false,
-                      backgroundColor: Colors.white,
-                      appContext: context,
-                      pastedTextStyle: TextStyle(
-                        color: Colors.green.shade600,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      length: 6,
-                      obscureText: true,
-                      obscuringCharacter: '*',
-                      // obscuringWidget: const FlutterLogo(
-                      //   size: 24,
-                      // ),
-                      blinkWhenObscuring: true,
-                      animationType: AnimationType.fade,
-                      validator: (v) {
-                        if (v!.length < 3) {
-                          return "";
-                        } else {
-                          return null;
-                        }
-                      },
-                      pinTheme: PinTheme(
-                        selectedColor: Colors.black,
-
-                        activeColor: Colors.white,
-                        selectedFillColor: Colors.white,
-                        shape: PinCodeFieldShape.box,
-                        inactiveFillColor: Colors.white,
-                        inactiveColor: Colors.black,
-                        borderRadius: BorderRadius.circular(5),
-                        borderWidth: 0.5,
-                        fieldHeight: 40,
-                        fieldWidth: 35,
-                        activeFillColor: Colors.white,
-                      ),
-                      cursorColor: Colors.black,
-                      animationDuration: const Duration(milliseconds: 300),
-                      enableActiveFill: true,
-                      //  errorAnimationController: errorController,
-                      controller: textEditingController,
-                      keyboardType: TextInputType.number,
-                      boxShadows: const [
-                        BoxShadow(
-                          offset: Offset(0, 1),
-                          color: Colors.black12,
-                          blurRadius: 10,
-                        )
-                      ],
-                      onCompleted: (v) {
-                        debugPrint("Completed");
-                      },
-                      // onTap: () {
-                      //   print("Pressed");
-                      // },
-                      onChanged: (value) {
-                        debugPrint(value);
-                        setState(() {
-                          currentText = value;
-                        });
-                      },
-                      beforeTextPaste: (text) {
-                        debugPrint("Allowing to paste $text");
-                        //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                        //but you can show anything you want here, like your pop up saying wrong paste format or etc
-                        return true;
-                      },
-                    )),
-              ),
-
-
-
-
-
-              SizedBox(
-                height: size.height*0.03,
-              ),
-
-
-              // GestureDetector(
-              //   onTap: () {
-              //     // if(way == 'email') {
-              //     //   setState(() {
-              //     //     way = 'phone';
-              //     //   });
-              //     // } else {
-              //     //   setState(() {
-              //     //     way = 'email';
-              //     //   });
-              //     // }
-              //   },
-              //   child: Center(
-              //       child: Text('Resent Code', style: TextStyle(color: Color(0xFF585858), fontSize: 15,),)
-              //   ),
-              // ),
-              SizedBox(
-                height: size.height*0.05,
-              ),
-              isVerify ? Center(child: CircularProgressIndicator(
-                color: darkRedColor,
-                strokeWidth: 1,
-              )) :
-              Padding(
-                padding: const EdgeInsets.only(left: 16,right: 16),
-                child: Container(
-
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                    ],
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: [0.0, 1.0],
-                      colors: [
-                        darkRedColor,
-                        lightRedColor,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                        backgroundColor:
-                        MaterialStateProperty.all(Colors.transparent),
-                        // elevation: MaterialStateProperty.all(3),
-                        shadowColor:
-                        MaterialStateProperty.all(Colors.transparent),
-                      ),
-
-                      onPressed: () async {
-
-                        if(textEditingController.text.isEmpty) {
-                          showDialog(
-                              context: context,
-                              useSafeArea: false,
-                              barrierDismissible: true,
-                              builder: (context) => WillPopScope(
-                                onWillPop: () async => true,
-                                child: StatefulBuilder(
-                                    builder: (context, setState) {
-                                      return AlertDialog(
-                                        insetPadding: EdgeInsets.all(0),
-                                        content: SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              SizedBox(
-                                                height: size.height*0.07,
-                                              ),
-
-                                              Center(
-                                                  child: Text('Verify Phone Number', style: TextStyle(color: Color(0xFF585858), fontSize: 25,fontWeight: FontWeight.bold),)
-                                              ),
-
-                                              SizedBox(
-                                                height: size.height*0.025,
-                                              ),
-
-                                              Container(
-                                                width: size.width*0.8,
-                                                child: Center(
-                                                    child: Text('Please enter code received on your given ${_countryDialCode.toString()+_phoneController.text.toString()} phone number.',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(color: Colors.red, fontSize: 14,),)
-                                                ),
-                                              ),
-
-                                              SizedBox(
-                                                height: size.height*0.05,
-                                              ),
-
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 16,right: 16),
-                                                child: Container(
-
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                                                    ],
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
-                                                      stops: [0.0, 1.0],
-                                                      colors: [
-                                                        darkRedColor,
-                                                        lightRedColor,
-                                                      ],
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(10),
-                                                  ),
-                                                  child: ElevatedButton(
-                                                      style: ButtonStyle(
-                                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                          RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(10.0),
-                                                          ),
-                                                        ),
-                                                        minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                                                        backgroundColor:
-                                                        MaterialStateProperty.all(Colors.transparent),
-                                                        // elevation: MaterialStateProperty.all(3),
-                                                        shadowColor:
-                                                        MaterialStateProperty.all(Colors.transparent),
-                                                      ),
-
-                                                      onPressed: () async {
-                                                        Navigator.pop(context);
-                                                        //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
-
-                                                      }, child: Text('Cancel', style: buttonStyle)),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: size.height*0.05,
-                                              ),
-
-
-
-                                            ],
-                                          ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     // if(way == 'email') {
+                            //     //   setState(() {
+                            //     //     way = 'phone';
+                            //     //   });
+                            //     // } else {
+                            //     //   setState(() {
+                            //     //     way = 'email';
+                            //     //   });
+                            //     // }
+                            //   },
+                            //   child: Center(
+                            //       child: Text('Resent Code', style: TextStyle(color: Color(0xFF585858), fontSize: 15,),)
+                            //   ),
+                            // ),
+                            SizedBox(
+                              height: size.height * 0.05,
+                            ),
+                            isVerify
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                    color: darkRedColor,
+                                    strokeWidth: 1,
+                                  ))
+                                : Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 16, right: 16),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black26,
+                                              offset: Offset(0, 4),
+                                              blurRadius: 5.0)
+                                        ],
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          stops: [0.0, 1.0],
+                                          colors: [
+                                            darkRedColor,
+                                            lightRedColor,
+                                          ],
                                         ),
-
-                                      );
-                                    }),
-                              )
-                          );
-                        } else {
-
-                          setState(() {
-                            isVerify = true;
-                          });
-                          FirebaseAuth auth = FirebaseAuth.instance;
-
-                          smsCode = textEditingController.text.trim();
-
-                          try{
-                            auth.signInWithCredential(await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!)).then((UserCredential result)
-                            {
-                              setState(() {
-                                isVerify = false;
-                              });
-
-                              if(result.user != null) {
-                                prefs.setString('userPhone', _countryDialCode!+phoneNumberWithZero);
-                                if( isCategoryExists == 'yes') {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => LoginScreen()
-                                  ));
-                                } else {
-                                  // _phoneController.text.trim()
-                                  Navigator.pushReplacement(context, MaterialPageRoute(
-
-                                      builder: (context) => SignUpScreen(phone: _countryDialCode!+phoneNumberWithZero,)
-                                  ));
-                                }
-                              } else {
-
-
-                                showDialog(
-                                    context: context,
-                                    useSafeArea: false,
-                                    barrierDismissible: true,
-                                    builder: (context) => WillPopScope(
-                                      onWillPop: () async => true,
-                                      child: StatefulBuilder(
-                                          builder: (context, setState) {
-                                            return AlertDialog(
-                                              insetPadding: EdgeInsets.all(0),
-                                              content: SingleChildScrollView(
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      height: size.height*0.07,
-                                                    ),
-
-                                                    Center(
-                                                        child: Text('Verify Phone Number', style: TextStyle(color: Color(0xFF585858), fontSize: 25,fontWeight: FontWeight.bold),)
-                                                    ),
-
-                                                    SizedBox(
-                                                      height: size.height*0.025,
-                                                    ),
-
-                                                    Container(
-                                                      width: size.width*0.8,
-                                                      child: Center(
-                                                          child: Text('Wrong code',
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(color: Colors.red, fontSize: 14,),)
-                                                      ),
-                                                    ),
-
-                                                    SizedBox(
-                                                      height: size.height*0.05,
-                                                    ),
-
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 16,right: 16),
-                                                      child: Container(
-
-                                                        decoration: BoxDecoration(
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                                color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                                                          ],
-                                                          gradient: LinearGradient(
-                                                            begin: Alignment.topLeft,
-                                                            end: Alignment.bottomRight,
-                                                            stops: [0.0, 1.0],
-                                                            colors: [
-                                                              darkRedColor,
-                                                              lightRedColor,
-                                                            ],
-                                                          ),
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        child: ElevatedButton(
-                                                            style: ButtonStyle(
-                                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                                RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.circular(10.0),
-                                                                ),
-                                                              ),
-                                                              minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                                                              backgroundColor:
-                                                              MaterialStateProperty.all(Colors.transparent),
-                                                              // elevation: MaterialStateProperty.all(3),
-                                                              shadowColor:
-                                                              MaterialStateProperty.all(Colors.transparent),
-                                                            ),
-
-                                                            onPressed: () async {
-                                                              Navigator.pop(context);
-                                                              //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
-
-                                                            }, child: Text('Cancel', style: buttonStyle)),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: size.height*0.05,
-                                                    ),
-
-
-
-                                                  ],
-                                                ),
-                                              ),
-
-                                            );
-                                          }),
-                                    )
-                                );
-
-                                // var snackBar = SnackBar(
-                                //     backgroundColor: Colors.red,
-                                //     content: Text('Wrong code try again',style: TextStyle(color: Colors.white),));
-                                // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              }
-
-
-
-
-                            }).catchError((e){
-                              print(e);
-                              setState(() {
-                                isVerify = false;
-                              });
-                              showDialog(
-                                  context: context,
-                                  useSafeArea: false,
-                                  barrierDismissible: true,
-                                  builder: (context) => WillPopScope(
-                                    onWillPop: () async => true,
-                                    child: StatefulBuilder(
-                                        builder: (context, setState) {
-                                          return AlertDialog(
-                                            insetPadding: EdgeInsets.all(0),
-                                            content: SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: size.height*0.07,
-                                                  ),
-
-                                                  Center(
-                                                      child: Text('Verify Phone Number', style: TextStyle(color: Color(0xFF585858), fontSize: 25,fontWeight: FontWeight.bold),)
-                                                  ),
-
-                                                  SizedBox(
-                                                    height: size.height*0.025,
-                                                  ),
-
-                                                  Container(
-                                                    width: size.width*0.8,
-                                                    child: Center(
-                                                        child: Text('Wrong code',
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(color: Colors.red, fontSize: 14,),)
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(
-                                                    height: size.height*0.05,
-                                                  ),
-
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 16,right: 16),
-                                                    child: Container(
-
-                                                      decoration: BoxDecoration(
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                              color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                                                        ],
-                                                        gradient: LinearGradient(
-                                                          begin: Alignment.topLeft,
-                                                          end: Alignment.bottomRight,
-                                                          stops: [0.0, 1.0],
-                                                          colors: [
-                                                            darkRedColor,
-                                                            lightRedColor,
-                                                          ],
-                                                        ),
-                                                        borderRadius: BorderRadius.circular(10),
-                                                      ),
-                                                      child: ElevatedButton(
-                                                          style: ButtonStyle(
-                                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                              RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(10.0),
-                                                              ),
-                                                            ),
-                                                            minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                                                            backgroundColor:
-                                                            MaterialStateProperty.all(Colors.transparent),
-                                                            // elevation: MaterialStateProperty.all(3),
-                                                            shadowColor:
-                                                            MaterialStateProperty.all(Colors.transparent),
-                                                          ),
-
-                                                          onPressed: () async {
-                                                            Navigator.pop(context);
-                                                            //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
-
-                                                          }, child: Text('Cancel', style: buttonStyle)),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: size.height*0.05,
-                                                  ),
-
-
-
-                                                ],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
                                               ),
                                             ),
-
-                                          );
-                                        }),
-                                  )
-                              );
-                              // var snackBar = SnackBar(
-                              //     backgroundColor: Colors.red,
-                              //     content: Text('Wrong code',style: TextStyle(color: Colors.white),));
-                              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            });
-                          } catch (e) {
-                            setState(() {
-                              isVerify = false;
-                            });
-
-                            showDialog(
-                                context: context,
-                                useSafeArea: false,
-                                barrierDismissible: true,
-                                builder: (context) => WillPopScope(
-                                  onWillPop: () async => true,
-                                  child: StatefulBuilder(
-                                      builder: (context, setState) {
-                                        return AlertDialog(
-                                          insetPadding: EdgeInsets.all(0),
-                                          content: SingleChildScrollView(
-                                            child: Column(
-                                              children: [
-                                                SizedBox(
-                                                  height: size.height*0.07,
-                                                ),
-
-                                                Center(
-                                                    child: Text('Verify Phone Number', style: TextStyle(color: Color(0xFF585858), fontSize: 25,fontWeight: FontWeight.bold),)
-                                                ),
-
-                                                SizedBox(
-                                                  height: size.height*0.025,
-                                                ),
-
-                                                Container(
-                                                  width: size.width*0.8,
-                                                  child: Center(
-                                                      child: Text('Wrong code',
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(color: Colors.red, fontSize: 14,),)
-                                                  ),
-                                                ),
-
-                                                SizedBox(
-                                                  height: size.height*0.05,
-                                                ),
-
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 16,right: 16),
-                                                  child: Container(
-
-                                                    decoration: BoxDecoration(
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                            color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                                                      ],
-                                                      gradient: LinearGradient(
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                        stops: [0.0, 1.0],
-                                                        colors: [
-                                                          darkRedColor,
-                                                          lightRedColor,
-                                                        ],
-                                                      ),
-                                                      borderRadius: BorderRadius.circular(10),
-                                                    ),
-                                                    child: ElevatedButton(
-                                                        style: ButtonStyle(
-                                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                            RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10.0),
-                                                            ),
-                                                          ),
-                                                          minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                                                          backgroundColor:
-                                                          MaterialStateProperty.all(Colors.transparent),
-                                                          // elevation: MaterialStateProperty.all(3),
-                                                          shadowColor:
-                                                          MaterialStateProperty.all(Colors.transparent),
-                                                        ),
-
-                                                        onPressed: () async {
-                                                          Navigator.pop(context);
-                                                          //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
-
-                                                        }, child: Text('Cancel', style: buttonStyle)),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: size.height*0.05,
-                                                ),
-
-
-
-                                              ],
-                                            ),
+                                            minimumSize:
+                                                MaterialStateProperty.all(
+                                                    Size(size.width, 50)),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.transparent),
+                                            // elevation: MaterialStateProperty.all(3),
+                                            shadowColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.transparent),
                                           ),
+                                          onPressed: () async {
+                                            if (textEditingController
+                                                .text.isEmpty) {
+                                              showDialog(
+                                                  context: context,
+                                                  useSafeArea: false,
+                                                  barrierDismissible: true,
+                                                  builder:
+                                                      (context) => WillPopScope(
+                                                            onWillPop:
+                                                                () async =>
+                                                                    true,
+                                                            child: StatefulBuilder(
+                                                                builder: (context,
+                                                                    setState) {
+                                                              return AlertDialog(
+                                                                insetPadding:
+                                                                    EdgeInsets
+                                                                        .all(0),
+                                                                content:
+                                                                    SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height: size.height *
+                                                                            0.07,
+                                                                      ),
+                                                                      Center(
+                                                                          child:
+                                                                              Text(
+                                                                        'Verify Phone Number',
+                                                                        style: TextStyle(
+                                                                            color: Color(
+                                                                                0xFF585858),
+                                                                            fontSize:
+                                                                                25,
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                      )),
+                                                                      SizedBox(
+                                                                        height: size.height *
+                                                                            0.025,
+                                                                      ),
+                                                                      Container(
+                                                                        width: size.width *
+                                                                            0.8,
+                                                                        child: Center(
+                                                                            child: Text(
+                                                                          'Please enter code received on your given ${_countryDialCode.toString() + _phoneController.text.toString()} phone number.',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.red,
+                                                                            fontSize:
+                                                                                14,
+                                                                          ),
+                                                                        )),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height: size.height *
+                                                                            0.05,
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .only(
+                                                                            left:
+                                                                                16,
+                                                                            right:
+                                                                                16),
+                                                                        child:
+                                                                            Container(
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            boxShadow: [
+                                                                              BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+                                                                            ],
+                                                                            gradient:
+                                                                                LinearGradient(
+                                                                              begin: Alignment.topLeft,
+                                                                              end: Alignment.bottomRight,
+                                                                              stops: [
+                                                                                0.0,
+                                                                                1.0
+                                                                              ],
+                                                                              colors: [
+                                                                                darkRedColor,
+                                                                                lightRedColor,
+                                                                              ],
+                                                                            ),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                          child: ElevatedButton(
+                                                                              style: ButtonStyle(
+                                                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                                                  RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.circular(10.0),
+                                                                                  ),
+                                                                                ),
+                                                                                minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
+                                                                                backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                                                                                // elevation: MaterialStateProperty.all(3),
+                                                                                shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                                                              ),
+                                                                              onPressed: () async {
+                                                                                Navigator.pop(context);
+                                                                                //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
+                                                                              },
+                                                                              child: Text('Cancel', style: buttonStyle)),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height: size.height *
+                                                                            0.05,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }),
+                                                          ));
+                                            } else {
+                                              setState(() {
+                                                isVerify = true;
+                                              });
+                                              FirebaseAuth auth =
+                                                  FirebaseAuth.instance;
 
-                                        );
-                                      }),
-                                )
-                            );
+                                              smsCode = textEditingController
+                                                  .text
+                                                  .trim();
 
-                            // var snackBar = SnackBar(
-                            //     backgroundColor: Colors.red,
-                            //     content: Text('Wrong code',style: TextStyle(color: Colors.white),));
-                            // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          }
+                                              try {
+                                                auth
+                                                    .signInWithCredential(
+                                                        await PhoneAuthProvider
+                                                            .credential(
+                                                                verificationId:
+                                                                    verificationId!,
+                                                                smsCode:
+                                                                    smsCode!))
+                                                    .then((UserCredential
+                                                        result) {
+                                                  setState(() {
+                                                    isVerify = false;
+                                                  });
 
-                        }
+                                                  if (result.user != null) {
+                                                    prefs.setString(
+                                                        'userPhone',
+                                                        _countryDialCode! +
+                                                            phoneNumberWithZero);
+                                                    if (isCategoryExists ==
+                                                        'yes') {
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  LoginScreen()));
+                                                    } else {
+                                                      // _phoneController.text.trim()
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  SignUpScreen(
+                                                                    phone: _countryDialCode! +
+                                                                        phoneNumberWithZero,
+                                                                  )));
+                                                    }
+                                                  } else {
+                                                    showDialog(
+                                                        context: context,
+                                                        useSafeArea: false,
+                                                        barrierDismissible:
+                                                            true,
+                                                        builder:
+                                                            (context) =>
+                                                                WillPopScope(
+                                                                  onWillPop:
+                                                                      () async =>
+                                                                          true,
+                                                                  child: StatefulBuilder(
+                                                                      builder:
+                                                                          (context,
+                                                                              setState) {
+                                                                    return AlertDialog(
+                                                                      insetPadding:
+                                                                          EdgeInsets.all(
+                                                                              0),
+                                                                      content:
+                                                                          SingleChildScrollView(
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            SizedBox(
+                                                                              height: size.height * 0.07,
+                                                                            ),
+                                                                            Center(
+                                                                                child: Text(
+                                                                              'Verify Phone Number',
+                                                                              style: TextStyle(color: Color(0xFF585858), fontSize: 25, fontWeight: FontWeight.bold),
+                                                                            )),
+                                                                            SizedBox(
+                                                                              height: size.height * 0.025,
+                                                                            ),
+                                                                            Container(
+                                                                              width: size.width * 0.8,
+                                                                              child: Center(
+                                                                                  child: Text(
+                                                                                'Wrong code',
+                                                                                textAlign: TextAlign.center,
+                                                                                style: TextStyle(
+                                                                                  color: Colors.red,
+                                                                                  fontSize: 14,
+                                                                                ),
+                                                                              )),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: size.height * 0.05,
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.only(left: 16, right: 16),
+                                                                              child: Container(
+                                                                                decoration: BoxDecoration(
+                                                                                  boxShadow: [
+                                                                                    BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+                                                                                  ],
+                                                                                  gradient: LinearGradient(
+                                                                                    begin: Alignment.topLeft,
+                                                                                    end: Alignment.bottomRight,
+                                                                                    stops: [
+                                                                                      0.0,
+                                                                                      1.0
+                                                                                    ],
+                                                                                    colors: [
+                                                                                      darkRedColor,
+                                                                                      lightRedColor,
+                                                                                    ],
+                                                                                  ),
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                ),
+                                                                                child: ElevatedButton(
+                                                                                    style: ButtonStyle(
+                                                                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                                                        RoundedRectangleBorder(
+                                                                                          borderRadius: BorderRadius.circular(10.0),
+                                                                                        ),
+                                                                                      ),
+                                                                                      minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
+                                                                                      backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                                                                                      // elevation: MaterialStateProperty.all(3),
+                                                                                      shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                                                                    ),
+                                                                                    onPressed: () async {
+                                                                                      Navigator.pop(context);
+                                                                                      //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
+                                                                                    },
+                                                                                    child: Text('Cancel', style: buttonStyle)),
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: size.height * 0.05,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }),
+                                                                ));
 
+                                                    // var snackBar = SnackBar(
+                                                    //     backgroundColor: Colors.red,
+                                                    //     content: Text('Wrong code try again',style: TextStyle(color: Colors.white),));
+                                                    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                  }
+                                                }).catchError((e) {
+                                                  print(e);
+                                                  setState(() {
+                                                    isVerify = false;
+                                                  });
+                                                  showDialog(
+                                                      context: context,
+                                                      useSafeArea: false,
+                                                      barrierDismissible: true,
+                                                      builder:
+                                                          (context) =>
+                                                              WillPopScope(
+                                                                onWillPop:
+                                                                    () async =>
+                                                                        true,
+                                                                child: StatefulBuilder(
+                                                                    builder:
+                                                                        (context,
+                                                                            setState) {
+                                                                  return AlertDialog(
+                                                                    insetPadding:
+                                                                        EdgeInsets
+                                                                            .all(0),
+                                                                    content:
+                                                                        SingleChildScrollView(
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          SizedBox(
+                                                                            height:
+                                                                                size.height * 0.07,
+                                                                          ),
+                                                                          Center(
+                                                                              child: Text(
+                                                                            'Verify Phone Number',
+                                                                            style: TextStyle(
+                                                                                color: Color(0xFF585858),
+                                                                                fontSize: 25,
+                                                                                fontWeight: FontWeight.bold),
+                                                                          )),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                size.height * 0.025,
+                                                                          ),
+                                                                          Container(
+                                                                            width:
+                                                                                size.width * 0.8,
+                                                                            child: Center(
+                                                                                child: Text(
+                                                                              'Wrong code',
+                                                                              textAlign: TextAlign.center,
+                                                                              style: TextStyle(
+                                                                                color: Colors.red,
+                                                                                fontSize: 14,
+                                                                              ),
+                                                                            )),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                size.height * 0.05,
+                                                                          ),
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(left: 16, right: 16),
+                                                                            child:
+                                                                                Container(
+                                                                              decoration: BoxDecoration(
+                                                                                boxShadow: [
+                                                                                  BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+                                                                                ],
+                                                                                gradient: LinearGradient(
+                                                                                  begin: Alignment.topLeft,
+                                                                                  end: Alignment.bottomRight,
+                                                                                  stops: [
+                                                                                    0.0,
+                                                                                    1.0
+                                                                                  ],
+                                                                                  colors: [
+                                                                                    darkRedColor,
+                                                                                    lightRedColor,
+                                                                                  ],
+                                                                                ),
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                              child: ElevatedButton(
+                                                                                  style: ButtonStyle(
+                                                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                                                      RoundedRectangleBorder(
+                                                                                        borderRadius: BorderRadius.circular(10.0),
+                                                                                      ),
+                                                                                    ),
+                                                                                    minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
+                                                                                    backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                                                                                    // elevation: MaterialStateProperty.all(3),
+                                                                                    shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                                                                  ),
+                                                                                  onPressed: () async {
+                                                                                    Navigator.pop(context);
+                                                                                    //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
+                                                                                  },
+                                                                                  child: Text('Cancel', style: buttonStyle)),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                size.height * 0.05,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }),
+                                                              ));
+                                                  // var snackBar = SnackBar(
+                                                  //     backgroundColor: Colors.red,
+                                                  //     content: Text('Wrong code',style: TextStyle(color: Colors.white),));
+                                                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                });
+                                              } catch (e) {
+                                                setState(() {
+                                                  isVerify = false;
+                                                });
 
+                                                showDialog(
+                                                    context: context,
+                                                    useSafeArea: false,
+                                                    barrierDismissible: true,
+                                                    builder:
+                                                        (context) =>
+                                                            WillPopScope(
+                                                              onWillPop:
+                                                                  () async =>
+                                                                      true,
+                                                              child: StatefulBuilder(
+                                                                  builder: (context,
+                                                                      setState) {
+                                                                return AlertDialog(
+                                                                  insetPadding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              0),
+                                                                  content:
+                                                                      SingleChildScrollView(
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          height:
+                                                                              size.height * 0.07,
+                                                                        ),
+                                                                        Center(
+                                                                            child:
+                                                                                Text(
+                                                                          'Verify Phone Number',
+                                                                          style: TextStyle(
+                                                                              color: Color(0xFF585858),
+                                                                              fontSize: 25,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        )),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              size.height * 0.025,
+                                                                        ),
+                                                                        Container(
+                                                                          width:
+                                                                              size.width * 0.8,
+                                                                          child: Center(
+                                                                              child: Text(
+                                                                            'Wrong code',
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: Colors.red,
+                                                                              fontSize: 14,
+                                                                            ),
+                                                                          )),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              size.height * 0.05,
+                                                                        ),
+                                                                        Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .only(
+                                                                              left: 16,
+                                                                              right: 16),
+                                                                          child:
+                                                                              Container(
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              boxShadow: [
+                                                                                BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+                                                                              ],
+                                                                              gradient: LinearGradient(
+                                                                                begin: Alignment.topLeft,
+                                                                                end: Alignment.bottomRight,
+                                                                                stops: [
+                                                                                  0.0,
+                                                                                  1.0
+                                                                                ],
+                                                                                colors: [
+                                                                                  darkRedColor,
+                                                                                  lightRedColor,
+                                                                                ],
+                                                                              ),
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            child: ElevatedButton(
+                                                                                style: ButtonStyle(
+                                                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                                                    RoundedRectangleBorder(
+                                                                                      borderRadius: BorderRadius.circular(10.0),
+                                                                                    ),
+                                                                                  ),
+                                                                                  minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
+                                                                                  backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                                                                                  // elevation: MaterialStateProperty.all(3),
+                                                                                  shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                                                                ),
+                                                                                onPressed: () async {
+                                                                                  Navigator.pop(context);
+                                                                                  //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
+                                                                                },
+                                                                                child: Text('Cancel', style: buttonStyle)),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              size.height * 0.05,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ));
 
+                                                // var snackBar = SnackBar(
+                                                //     backgroundColor: Colors.red,
+                                                //     content: Text('Wrong code',style: TextStyle(color: Colors.white),));
+                                                // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              }
+                                            }
 
-                        //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
-
-                      }, child: Text('Verify', style: buttonStyle)),
-                ),
-              ),
-              SizedBox(
-                height: size.height*0.05,
-              ),
-
-
-
-            ],
-          ),
-        ),
-
-      );
+                                            //  await PhoneAuthProvider.credential(verificationId: verificationId!, smsCode: smsCode!);
+                                          },
+                                          child: Text('Verify',
+                                              style: buttonStyle)),
+                                    ),
+                                  ),
+                            SizedBox(
+                              height: size.height * 0.05,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
                   }),
-            )
-        );
+                ));
       },
-        codeAutoRetrievalTimeout: (String verificationId){
-          setState(() {
-            isLoadingDialog = false;
-          });
-          verificationId = verificationId;
-          print(verificationId);
-          print('WE are here in code sent codeAutoRetrievalTimeout');
-          print("Timout");
-        },
-      verificationCompleted: (AuthCredential authCredential){
+      codeAutoRetrievalTimeout: (String verificationId) {
+        setState(() {
+          isLoadingDialog = false;
+        });
+        verificationId = verificationId;
+        print(verificationId);
+        print('WE are here in code sent codeAutoRetrievalTimeout');
+        print("Timout");
+      },
+      verificationCompleted: (AuthCredential authCredential) {
         print('WE are here in code sent verificationCompleted');
 
-        _auth.signInWithCredential(authCredential).then((UserCredential result){
-          if( isCategoryExists == 'yes') {
-            Navigator.pushReplacement(context, MaterialPageRoute(
-                builder: (context) => LoginScreen()
-            ));
+        _auth
+            .signInWithCredential(authCredential)
+            .then((UserCredential result) {
+          if (isCategoryExists == 'yes') {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => LoginScreen()));
+          } else {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SignUpScreen(
+                          phone: _countryDialCode! + phoneNumberWithZero,
+                        )));
           }
-          else {
-            Navigator.pushReplacement(context, MaterialPageRoute(
-                builder: (context) => SignUpScreen(phone: _countryDialCode!+phoneNumberWithZero,)
-            ));
-          }
-
-        }).catchError((e){
+        }).catchError((e) {
           print(e);
         });
       },
-
     );
   }
 

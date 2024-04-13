@@ -27,7 +27,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     //   'Content-Type': 'application/json',
     //   'Cookie': 'restaurant_session=$cookie'
     // };
-    var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/forgot_password?email=${_controller.text.toString()}'));
+    var request = http.Request('POST', Uri.parse('${apiBaseUrl}forgot_password?email=${_controller.text.toString()}'));
 
     //request.headers.addAll(headers);
 

@@ -218,7 +218,7 @@ class _CheckOutScreenState extends State<CheckOutScreen>
       'Cookie': 'restaurant_session=$cookie'
     };
     var request = http.MultipartRequest(
-        'GET', Uri.parse('${apiBaseUrl}api/flames'));
+        'GET', Uri.parse('${apiBaseUrl}flames'));
 
     request.headers.addAll(headers);
 
@@ -552,7 +552,7 @@ class _CheckOutScreenState extends State<CheckOutScreen>
         print('Delivery Fee :${prefs.getString('delivery') == 'yes' && deliveryType.toString() != 'Self' ? prefs.getString('deliveryFee').toString() :  '0'}');
 
 
-        var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/order_create'));
+        var request = http.Request('POST', Uri.parse('${apiBaseUrl}order_create'));
 
         request.body = json.encode({
           "transaction_id": Random().nextInt(1000000).toString(),
@@ -700,7 +700,7 @@ class _CheckOutScreenState extends State<CheckOutScreen>
       'Cookie': 'restaurant_session=$cookie'
     };
 
-    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}api/update_flame_status/$flameId'));
+    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}update_flame_status/$flameId'));
     request.fields.addAll({
       'status': 'Completed'
     });

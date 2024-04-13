@@ -29,7 +29,7 @@ class _VerificationCompleteScreenState extends State<VerificationCompleteScreen>
       'Cookie': 'restaurant_session=$cookie'
     };
 
-    var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/change_password?password=${_passwordController.text.toString()}&confirm_password=${_confirmPassController.text.toString()}'));
+    var request = http.Request('POST', Uri.parse('${apiBaseUrl}change_password?password=${_passwordController.text.toString()}&confirm_password=${_confirmPassController.text.toString()}'));
 
      request.headers.addAll(headers);
 

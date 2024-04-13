@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 
 const String cookie = 'xUEcbmiSZRd2G6yxV15PNn62utcwXvLJtM963Ov5';
 const String paymentBaseUrl = 'https://www.payfast.co.za'; //'https://sandbox.payfast.co.za';//
-const String apiBaseUrl = 'http://restaurant.wettlanoneinc.com/'; //'https://sandbox.payfast.co.za';//
+const String baseUrlMain = 'http://restaurant.ancerl.co.za/'; //'https://sandbox.payfast.co.za';//
+const String apiBaseUrl = 'http://restaurant.ancerl.co.za/api/';
+
 const String merchantId = '17831964';//'10029889' ;
 const String merchantKey = 'erx7tvqdki677';//'w2vjpg42fc7a6';//
 const String merchantPassphrase = 'Honchos_786F';//'testingapiss';
 const String returnUrl = 'http://www.yourdomain.co.za/return';//'erx7tvqdki677';
 const String cancelUrl = 'http://www.yourdomain.co.za/cancel';//'erx7tvqdki677';
 const String googleMapKey = "AIzaSyDT2jOXq4VDp9DluoLKbX5d_loZSKwr5V0";
-const String imageConstUrl = '${apiBaseUrl}image/category/';
-const String imageConstUrlBanner = '${apiBaseUrl}image/banner/';
-const String imageConstUrlRes = '${apiBaseUrl}image/restaurants/';
-const String imageConstUrlProduct = '${apiBaseUrl}image/product/';
+const String imageConstUrl = '${baseUrlMain}image/category/';
+const String imageConstUrlBanner = '${baseUrlMain}image/banner/';
+const String imageConstUrlRes = '${baseUrlMain}image/restaurants/';
+const String imageConstUrlProduct = '${baseUrlMain}image/product/';
 
 const categoryHeight =  220.0;
 const tileHeight =  35.0;

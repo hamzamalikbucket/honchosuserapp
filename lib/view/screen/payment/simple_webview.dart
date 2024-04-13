@@ -179,7 +179,7 @@ Page resource error:
         'Content-Type': 'application/json',
         'Cookie': 'restaurant_session=$cookie'
       };
-      var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/order_create'));
+      var request = http.Request('POST', Uri.parse('${apiBaseUrl}order_create'));
       request.body = json.encode({
         "transaction_id": Random().nextInt(1000000).toString(),
         "restaurant_id": widget.restaurantId,
@@ -305,7 +305,7 @@ Page resource error:
       'Cookie': 'restaurant_session=$cookie'
     };
 
-    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}api/update_flame_status/$flameId'));
+    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}update_flame_status/$flameId'));
     request.fields.addAll({
       'status': 'Completed'
     });

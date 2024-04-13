@@ -53,7 +53,7 @@ class AddToCartController extends GetxController {
         'Accept': 'application/json'
       };
 
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/cart'));
+      var request = http.Request('GET', Uri.parse('${baseUrlMain}api/cart'));
 
       request.headers.addAll(headers);
 
@@ -182,7 +182,7 @@ class AddToCartController extends GetxController {
       var headers = {
         'Cookie': 'restaurant_session=$cookie'
       };
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/banners'));
+      var request = http.Request('GET', Uri.parse('${baseUrlMain}api/banners'));
 
       request.headers.addAll(headers);
 
@@ -236,7 +236,7 @@ class AddToCartController extends GetxController {
         'Cookie': 'restaurant_session=$cookie'
       };
 
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/products'));
+      var request = http.Request('GET', Uri.parse('${baseUrlMain}api/products'));
 
       request.headers.addAll(headers);
       print( 'response before Hello getProducts');

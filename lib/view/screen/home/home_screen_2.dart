@@ -154,7 +154,7 @@ class _HomeScreenTestingState extends State<HomeScreenTesting> with SingleTicker
     print('we are in banners');
     try {
       var headers = {'Cookie': 'restaurant_session=$cookie'};
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/banners'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}banners'));
 
       request.headers.addAll(headers);
 
@@ -283,7 +283,7 @@ class _HomeScreenTestingState extends State<HomeScreenTesting> with SingleTicker
       'Accept': 'application/json'
     };
 
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/categories'));
+    var request = http.Request('GET', Uri.parse('${apiBaseUrl}categories'));
 
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -433,7 +433,7 @@ class _HomeScreenTestingState extends State<HomeScreenTesting> with SingleTicker
     try {
       var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
 
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/products'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}products'));
 
       request.headers.addAll(headers);
       print('response before Hello getProducts');
@@ -829,7 +829,7 @@ class _HomeScreenTestingState extends State<HomeScreenTesting> with SingleTicker
 
       print(prefs.getString('selectedRestaurant').toString() + ' selectedRestaurant 123');
       var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/restaurants/${prefs.getString('selectedRestaurant')}'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}restaurants/${prefs.getString('selectedRestaurant')}'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       final responseData = await response.stream.bytesToString();

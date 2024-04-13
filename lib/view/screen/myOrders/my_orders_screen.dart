@@ -55,7 +55,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> with SingleTickerProvid
     var headers = {'Cookie': 'restaurant_session=$cookie'};
 
     try {
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/order'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}order'));
 
       request.headers.addAll(headers);
 

@@ -73,7 +73,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   getRestaurantsLatLong() async {
     var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/restaurants/${widget.order.ordersItems![0].product!.restaurantId.toString()}'));
+    var request = http.Request('GET', Uri.parse('${apiBaseUrl}restaurants/${widget.order.ordersItems![0].product!.restaurantId.toString()}'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     final responseData = await response.stream.bytesToString();

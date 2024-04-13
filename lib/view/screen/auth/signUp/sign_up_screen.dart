@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io' as f;
 
@@ -17,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class SignUpScreen extends StatefulWidget {
   final String phone;
@@ -38,7 +36,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isLoadingImage = false;
 
   //final FirebaseAuth auth = FirebaseAuth.instance;
-  String? profileImage = '', docId, userType, driverEmail = '', driverName = '', driverUid = '',image = '';
+  String? profileImage = '',
+      docId,
+      userType,
+      driverEmail = '',
+      driverName = '',
+      driverUid = '',
+      image = '';
 
   RegExp regEx = new RegExp(r"(?=.*[a-z])(?=.*[A-Z])\w+");
   final InputValidator _inputValidator = InputValidator();
@@ -48,8 +52,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneController = TextEditingController();
   //f.File? image;
   //f.File image = f.File('your initial file');
-
-
 
   void signUp() async {
     print(_nameController.text);
@@ -68,16 +70,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     //
     // http.StreamedResponse response = await request.send();
     // final responseData = await response.stream.bytesToString();
-    try{
-      var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}api/register'));
+    try {
+      var request =
+          http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}register'));
       request.fields.addAll({
         'name': _nameController.text.toString(),
-        'email': _emailAddressController.text.toString(),//'fortest@gmail.com',
+        'email': _emailAddressController.text.toString(), //'fortest@gmail.com',
         'phone_no': widget.phone.toString(),
         'password': _passwordController.text.toString()
       });
 
-      request.files.add(await http.MultipartFile.fromPath('image', _pickedFile!.path.toString()));
+      request.files.add(await http.MultipartFile.fromPath(
+          'image', _pickedFile!.path.toString()));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       final responseData = await response.stream.bytesToString();
@@ -87,10 +91,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print('we are in signup 200');
         // pageModel = PageModel.fromJson(json.decode(responseData));
         FirebaseFirestore.instance.collection('Users').doc().set({
-          'email':_emailAddressController.text.trim(),
-          'phone':widget.phone.toString(),
-          'name':_nameController.text.trim(),
-          'password':_passwordController.text.trim(),
+          'email': _emailAddressController.text.trim(),
+          'phone': widget.phone.toString(),
+          'name': _nameController.text.trim(),
+          'password': _passwordController.text.trim(),
         }).then((value) {
           signIn();
           // setState(() {
@@ -99,29 +103,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
           prefs.setString('userPhone', widget.phone.toString());
           prefs.setString('userEmail', _emailAddressController.text.toString());
 
-
           // Navigator.push(
           //   context,
           //   MaterialPageRoute(builder: (context) => EnableLocationScreen()),
           // );
-
         });
         // print(await response.stream.bytesToString());
-      }
-      else if (response.statusCode == 302) {
+      } else if (response.statusCode == 302) {
         print(data.toString());
         print('we are in signup 302');
         print(response.reasonPhrase.toString());
         setState(() {
           isLoading = false;
         });
-        var snackBar = SnackBar(content: Text('The email has already been taken.'
-          ,style: TextStyle(color: Colors.white),),
+        var snackBar = SnackBar(
+          content: Text(
+            'The email has already been taken.',
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Colors.red,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
-      else {
+      } else {
         print(data.toString());
         setState(() {
           isLoading = false;
@@ -130,28 +133,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print(response.reasonPhrase.toString());
         print(response.reasonPhrase);
         print(response.statusCode);
-        var snackBar = SnackBar(content: Text(response.reasonPhrase.toString()
-          ,style: TextStyle(color: Colors.white),),
+        var snackBar = SnackBar(
+          content: Text(
+            response.reasonPhrase.toString(),
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Colors.red,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
-    } catch(e) {
-
+    } catch (e) {
       setState(() {
         isLoading = false;
       });
       print(imageFile!.toString());
       print(e.toString());
-      var snackBar = SnackBar(content: Text('Server is not responding'
-        ,style: TextStyle(color: Colors.white),),
+      var snackBar = SnackBar(
+        content: Text(
+          'Server is not responding',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
-
-
 
   // getProfile() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -174,7 +180,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'Content-Type': 'application/json',
       'Cookie': 'restaurant_session=$cookie'
     };
-    var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/login?email=${_emailAddressController.text.toString()}&password=${_passwordController.text.toString()}'));
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${apiBaseUrl}login?email=${_emailAddressController.text.toString()}&password=${_passwordController.text.toString()}'));
 
     request.headers.addAll(headers);
 
@@ -188,46 +197,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
       getSessionToken();
       //prefs.setString('userEmail', _emailAddressController.text.toString());
 
-
       setState(() {
         isLoading = false;
       });
-      var snackBar = SnackBar(content: Text('User created successfully'
-        ,style: TextStyle(color: Colors.white),),
+      var snackBar = SnackBar(
+        content: Text(
+          'User created successfully',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.green,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
 
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
 
-
       // print(await response.stream.bytesToString());
-    }
-    else if (response.statusCode == 302) {
+    } else if (response.statusCode == 302) {
       setState(() {
         isLoading = false;
       });
-      var snackBar = SnackBar(content: Text(data['mesage'].toString()
-        ,style: TextStyle(color: Colors.white),),
+      var snackBar = SnackBar(
+        content: Text(
+          data['mesage'].toString(),
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
-      var snackBar = SnackBar(content: Text(await response.stream.bytesToString()
-        ,style: TextStyle(color: Colors.white),),
+      var snackBar = SnackBar(
+        content: Text(
+          await response.stream.bytesToString(),
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
   }
-
 
   void getSessionToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -235,7 +246,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'Content-Type': 'application/json',
       'Cookie': 'restaurant_session=$cookie'
     };
-    var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/get_session'));
+    var request =
+        http.Request('POST', Uri.parse('${apiBaseUrl}get_session'));
 
     request.headers.addAll(headers);
 
@@ -248,15 +260,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       prefs.setString('userId', model!.session!.id.toString());
       print('Session Token ${model!.session!.token.toString()}');
       getUser();
-     // getProfile();
+      // getProfile();
       cartController.fetchCartItems();
-    }
-    else if (response.statusCode == 302) {
+    } else if (response.statusCode == 302) {
       print(response.reasonPhrase);
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
-
     }
   }
 
@@ -270,16 +279,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if(prefs.getString('userId') != null ) {
+    if (prefs.getString('userId') != null) {
       setState(() {
         userId = prefs.getString('userId')!;
       });
     }
 
-    var headers = {
-      'Cookie': 'restaurant_session=$cookie'
-    };
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/users/$userId'));
+    var headers = {'Cookie': 'restaurant_session=$cookie'};
+    var request =
+        http.Request('GET', Uri.parse('${apiBaseUrl}users/$userId'));
 
     request.headers.addAll(headers);
 
@@ -288,27 +296,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (response.statusCode == 200) {
       final responseData = await response.stream.bytesToString();
       setState(() {
-        model1 = List<UserModel>.from(json.decode(responseData).map((x) => UserModel.fromJson(x)));
+        model1 = List<UserModel>.from(
+            json.decode(responseData).map((x) => UserModel.fromJson(x)));
       });
-      if(model1.isNotEmpty) {
+      if (model1.isNotEmpty) {
         prefs.setString('status', model1[0].status.toString());
         prefs.setString('userName', model1[0].name.toString());
         prefs.setString('userId', model1[0].id.toString());
-        FirebaseFirestore.instance.collection('userImage').doc(model1[0].id.toString()).set({
-          'userId':model1[0].id.toString(),
-          'image':profileImage.toString(),
+        FirebaseFirestore.instance
+            .collection('userImage')
+            .doc(model1[0].id.toString())
+            .set({
+          'userId': model1[0].id.toString(),
+          'image': profileImage.toString(),
         });
         //print('Session Token ${model!.session!.token.toString()}');
         //getUserData();
       }
-
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
-
   }
-
 
   void _showPicker(context) {
     showModalBottomSheet(
@@ -323,7 +331,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       leading: new Icon(Icons.photo_library),
                       title: new Text('Photo Library'),
                       onTap: () {
-
                         _imgFromGallery();
                         setState(() {
                           isLoadingImage = true;
@@ -362,7 +369,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           prefs.setString('profileImage', profileImage.toString());
           isLoadingImage = false;
         });
-
       } else {
         setState(() {
           isLoadingImage = false;
@@ -370,12 +376,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print('sorry error');
       }
     });
-
   }
 
   _imgFromGallery() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
 
     _pickedFile = (await ImagePicker.platform
         .pickImage(source: ImageSource.gallery, imageQuality: 50))!;
@@ -387,7 +391,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           prefs.setString('profileImage', profileImage.toString());
           isLoadingImage = false;
         });
-
       } else {
         setState(() {
           isLoadingImage = false;
@@ -406,9 +409,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (snapshot.state == TaskState.success) {
       return await snapshot.ref.getDownloadURL();
     }
-
   }
-
 
   @override
   void initState() {
@@ -420,6 +421,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -455,142 +457,143 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   Center(
                     child: SizedBox(
-                      height: size.height*0.35,
+                      height: size.height * 0.35,
                       width: size.width,
-                      child: Image.asset('assets/images/sign_up_bg.png', fit: BoxFit.cover,
-                        height: size.height*0.35,
+                      child: Image.asset(
+                        'assets/images/sign_up_bg.png',
+                        fit: BoxFit.cover,
+                        height: size.height * 0.35,
                         width: size.width,
                       ),
                     ),
                   ),
-
-                ],),
-
+                ],
+              ),
               SingleChildScrollView(
                 child: Container(
                   height: size.height,
-
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-
-
-                      Container(height: size.height*0.85,
+                      Container(
+                        height: size.height * 0.85,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.only(topRight: Radius.circular(30),
-                                topLeft: Radius.circular(30)
-                            )
-                        ),
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(30),
+                                topLeft: Radius.circular(30))),
                         child: SingleChildScrollView(
                           physics: NeverScrollableScrollPhysics(),
                           child: Column(
                             children: [
-
                               SizedBox(
-                                height: size.height*0.04,
+                                height: size.height * 0.04,
                               ),
 
                               Center(
                                 child: SizedBox(
                                   height: 80,
                                   width: 120,
-                                  child: Image.asset('assets/images/welcome_logo.png', fit: BoxFit.scaleDown,
+                                  child: Image.asset(
+                                    'assets/images/welcome_logo.png',
+                                    fit: BoxFit.scaleDown,
                                     height: 80,
-                                    width: 120,),
+                                    width: 120,
+                                  ),
                                 ),
                               ),
 
                               SizedBox(
-                                height: size.height*0.02,
+                                height: size.height * 0.02,
                               ),
 
                               // Center(
                               //     child: Text('Create Account', style: TextStyle(color: Color(0xFF585858), fontSize: 16,fontWeight: FontWeight.bold),)
                               // ),
 
-                              isLoadingImage ? Center(child: CircularProgressIndicator(
-                                color: darkRedColor,
-                                strokeWidth: 1,
-                              )) :
-                              Center(
-                                  child: Stack(children: [
-                                    ClipOval( child:
-
-                                    profileImage == '' ?
-
-                                    Image.network(
-                                      'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png',
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.cover,
-                                    )
-                                        : Image.network(profileImage.toString(),
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.cover,
-                                    )
-                                      ,
-
-                                    ),
-                                    Positioned(
-                                      left: size.width*0.1,
-                                      top: size.height*0.05,
-                                      child: InkWell(
-                                        onTap: () =>    _showPicker(context),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            // color: Colors.black.withOpacity(0.3), shape: BoxShape.circle,
-                                            // border: Border.all(width: 1, color: Theme.of(context).primaryColor),
-                                          ),
+                              isLoadingImage
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                      color: darkRedColor,
+                                      strokeWidth: 1,
+                                    ))
+                                  : Center(
+                                      child: Stack(children: [
+                                      ClipOval(
+                                        child: profileImage == ''
+                                            ? Image.network(
+                                                'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png',
+                                                width: 80,
+                                                height: 80,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.network(
+                                                profileImage.toString(),
+                                                width: 80,
+                                                height: 80,
+                                                fit: BoxFit.cover,
+                                              ),
+                                      ),
+                                      Positioned(
+                                        left: size.width * 0.1,
+                                        top: size.height * 0.05,
+                                        child: InkWell(
+                                          onTap: () => _showPicker(context),
                                           child: Container(
-                                            // height: 30,
-                                            // width: 30,
-                                            margin: EdgeInsets.all(10),
                                             decoration: BoxDecoration(
-                                              //border: Border.all(width: 2, color: Colors.white),
-                                              color: Colors.white,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.black26, offset: Offset(0, 4), blurRadius: 2.0)
-                                              ],
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(5.0),
-                                                child: Image.asset(
-                                                  'assets/images/editProfile.png',
-                                                  width: 15,
-                                                  height: 15,
-                                                  fit: BoxFit.cover,
+                                                // color: Colors.black.withOpacity(0.3), shape: BoxShape.circle,
+                                                // border: Border.all(width: 1, color: Theme.of(context).primaryColor),
+                                                ),
+                                            child: Container(
+                                              // height: 30,
+                                              // width: 30,
+                                              margin: EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                //border: Border.all(width: 2, color: Colors.white),
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Colors.black26,
+                                                      offset: Offset(0, 4),
+                                                      blurRadius: 2.0)
+                                                ],
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Center(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(5.0),
+                                                  child: Image.asset(
+                                                    'assets/images/editProfile.png',
+                                                    width: 15,
+                                                    height: 15,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ])),
+                                    ])),
 
                               // SizedBox(
                               //   height: size.height*0.01,
                               // ),
 
                               SizedBox(
-                                height: size.height*0.04,
+                                height: size.height * 0.04,
                               ),
 
-
                               Container(
-                                margin: EdgeInsets.only(left: 16,right: 16,bottom: 0),
+                                margin: EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 0),
                                 child: TextFormField(
                                   controller: _nameController,
                                   keyboardType: TextInputType.name,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black,
-
                                   ),
                                   onChanged: (value) {
                                     // setState(() {
@@ -599,7 +602,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   },
                                   decoration: InputDecoration(
                                     //contentPadding: EdgeInsets.only(top: 15,bottom: 15),
-                                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        20.0, 15.0, 20.0, 15.0),
                                     focusColor: Colors.white,
                                     //add prefix icon
 
@@ -610,8 +614,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
 
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: darkGreyTextColor1, width: 1.0),
+                                      borderSide: BorderSide(
+                                          color: darkGreyTextColor1,
+                                          width: 1.0),
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     fillColor: Colors.grey,
@@ -638,17 +643,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: size.height*0.02,
+                                height: size.height * 0.02,
                               ),
                               Container(
-                                margin: EdgeInsets.only(left: 16,right: 16,bottom: 0),
+                                margin: EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 0),
                                 child: TextFormField(
                                   controller: _emailAddressController,
                                   keyboardType: TextInputType.emailAddress,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black,
-
                                   ),
                                   onChanged: (value) {
                                     // setState(() {
@@ -657,7 +662,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   },
                                   decoration: InputDecoration(
                                     //contentPadding: EdgeInsets.only(top: 15,bottom: 15),
-                                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        20.0, 15.0, 20.0, 15.0),
                                     focusColor: Colors.white,
                                     //add prefix icon
 
@@ -668,8 +674,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
 
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: darkGreyTextColor1, width: 1.0),
+                                      borderSide: BorderSide(
+                                          color: darkGreyTextColor1,
+                                          width: 1.0),
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     fillColor: Colors.grey,
@@ -696,10 +703,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: size.height*0.02,
+                                height: size.height * 0.02,
                               ),
                               Container(
-                                margin: EdgeInsets.only(left: 16,right: 16,bottom: 0),
+                                margin: EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 0),
                                 child: TextFormField(
                                   controller: _phoneController,
                                   keyboardType: TextInputType.phone,
@@ -713,11 +721,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     //   userInput.text = value.toString();
                                     // });
                                   },
-
                                   decoration: InputDecoration(
                                     //contentPadding: EdgeInsets.only(top: 15,bottom: 15),
 
-                                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        20.0, 15.0, 20.0, 15.0),
                                     focusColor: Colors.white,
                                     //add prefix icon
 
@@ -728,8 +736,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
 
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: darkGreyTextColor1, width: 1.0),
+                                      borderSide: BorderSide(
+                                          color: darkGreyTextColor1,
+                                          width: 1.0),
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     fillColor: Colors.grey,
@@ -755,10 +764,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: size.height*0.02,
+                                height: size.height * 0.02,
                               ),
                               Container(
-                                margin: EdgeInsets.only(left: 16,right: 16,top: 0),
+                                margin: EdgeInsets.only(
+                                    left: 16, right: 16, top: 0),
                                 child: TextFormField(
                                   autofocus: true,
                                   controller: _passwordController,
@@ -766,7 +776,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black,
-
                                   ),
                                   onChanged: (value) {
                                     // setState(() {
@@ -777,7 +786,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     //contentPadding: EdgeInsets.only(top: 15,bottom: 15),
                                     focusColor: Colors.white,
                                     //add prefix icon
-                                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        20.0, 15.0, 20.0, 15.0),
 
                                     // errorText: "Error",
 
@@ -786,13 +796,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
 
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      const BorderSide(color: darkGreyTextColor1, width: 1.0),
+                                      borderSide: const BorderSide(
+                                          color: darkGreyTextColor1,
+                                          width: 1.0),
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     fillColor: Colors.grey,
                                     hintText: "",
-
 
                                     //make hint text
                                     hintStyle: TextStyle(
@@ -815,156 +825,206 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: size.height*0.02,
+                                height: size.height * 0.02,
                               ),
 
                               SizedBox(
-                                height: size.height*0.05,
+                                height: size.height * 0.05,
                               ),
 
-                              isLoading ? Center(child: CircularProgressIndicator(
-                                color: darkRedColor,
-                                strokeWidth: 1,
-                              )) :
-                              Padding(
-                                padding: const EdgeInsets.only(left: 16,right: 16),
-                                child: Container(
-
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-                                    ],
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      stops: [0.0, 1.0],
-                                      colors: [
-                                        darkRedColor,
-                                        lightRedColor,
-
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10.0),
+                              isLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                      color: darkRedColor,
+                                      strokeWidth: 1,
+                                    ))
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 16, right: 16),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black26,
+                                                offset: Offset(0, 4),
+                                                blurRadius: 5.0)
+                                          ],
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            stops: [0.0, 1.0],
+                                            colors: [
+                                              darkRedColor,
+                                              lightRedColor,
+                                            ],
                                           ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
-                                        minimumSize: MaterialStateProperty.all(Size(size.width, 50)),
-                                        backgroundColor:
-                                        MaterialStateProperty.all(Colors.transparent),
-                                        // elevation: MaterialStateProperty.all(3),
-                                        shadowColor:
-                                        MaterialStateProperty.all(Colors.transparent),
+                                        child: ElevatedButton(
+                                            style: ButtonStyle(
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                              ),
+                                              minimumSize:
+                                                  MaterialStateProperty.all(
+                                                      Size(size.width, 50)),
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.transparent),
+                                              // elevation: MaterialStateProperty.all(3),
+                                              shadowColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.transparent),
+                                            ),
+                                            onPressed: () {
+                                              if (profileImage == '') {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Upload profile image',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (_nameController
+                                                  .text.isEmpty) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Enter name',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (_inputValidator
+                                                          .validateName(
+                                                              _nameController
+                                                                  .text) !=
+                                                      'success' &&
+                                                  _nameController
+                                                      .text.isNotEmpty) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Invalid Name',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (_emailAddressController
+                                                  .text.isEmpty) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Enter email address',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (EmailValidator.validate(
+                                                      _emailAddressController
+                                                          .text) ==
+                                                  false) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Wrong Email Address',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (_phoneController
+                                                  .text.isEmpty) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Enter phone number',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (_passwordController
+                                                  .text.isEmpty) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Enter password',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (_inputValidator
+                                                          .validatePassword(
+                                                              _passwordController
+                                                                  .text) !=
+                                                      'success' &&
+                                                  _passwordController
+                                                      .text.isNotEmpty) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Password must have 8 character with one lower case letter and one upper case and a special character.',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (_passwordController
+                                                      .text.length <
+                                                  7) {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                    'Password length must have at least 8 character.',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else {
+                                                print(
+                                                    ' all condition done success');
+
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+
+                                                signUp();
+                                              }
+                                            },
+                                            child: Text('Sign Up',
+                                                style: buttonStyle)),
                                       ),
-
-                                      onPressed: () {
-
-                                        if(profileImage == '') {
-                                          var snackBar = SnackBar(content: Text('Upload profile image',style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,);
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-
-                                       else if(_nameController.text.isEmpty) {
-                                          var snackBar = SnackBar(content: Text('Enter name',style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,);
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-                                        else if(_inputValidator
-                                            .validateName(_nameController.text) !=
-                                            'success' &&
-                                            _nameController.text.isNotEmpty) {
-
-                                          var snackBar = SnackBar(content: Text('Invalid Name',style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,);
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                                        }
-                                        else if(_emailAddressController.text.isEmpty) {
-                                          var snackBar = SnackBar(content: Text('Enter email address',style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,);
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-                                        else if(EmailValidator.validate(_emailAddressController.text) == false) {
-                                          var snackBar = SnackBar(content: Text('Wrong Email Address'
-                                            ,style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,
-
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-                                        else if(_phoneController.text.isEmpty) {
-                                          var snackBar = SnackBar(content: Text('Enter phone number',style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,);
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-                                        else if(_passwordController.text.isEmpty) {
-                                          var snackBar = SnackBar(content: Text('Enter password',style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,);
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-                                        else if(_inputValidator
-                                            .validatePassword(_passwordController.text) !=
-                                            'success' &&
-                                            _passwordController.text.isNotEmpty) {
-                                          var snackBar = SnackBar(content: Text('Password must have 8 character with one lower case letter and one upper case and a special character.'
-                                            ,style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-
-                                        else if (_passwordController.text.length < 7) {
-
-                                          var snackBar = SnackBar(content: Text('Password length must have at least 8 character.'
-                                            ,style: TextStyle(color: Colors.white),),
-                                            backgroundColor: Colors.red,
-
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                                        }
-
-                                        else {
-
-                                          print(' all condition done success');
-
-
-
-                                            setState(() {
-                                              isLoading = true;
-                                            });
-
-                                            signUp();
-
-
-                                        }
-
-
-
-
-
-                                      }, child: Text('Sign Up', style: buttonStyle)),
-                                ),
-                              ),
+                                    ),
                               SizedBox(
-                                height: size.height*0.05,
+                                height: size.height * 0.05,
                               ),
-
-
                             ],
                           ),
                         ),
-
                       ),
-
-
-
 
                       // Center(
                       //   child: SizedBox(
@@ -1040,17 +1100,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //     ],
                       //   ),
                       // ),
-
-                    ],),
+                    ],
+                  ),
                 ),
               ),
-
-
-            ],),
-
-
-
-
+            ],
+          ),
         ),
       ),
     );

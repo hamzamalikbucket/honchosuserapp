@@ -67,7 +67,7 @@ class _CartScreenState extends State<CartScreen> {
     });
     try {
       var headers = {'Cookie': 'restaurant_session=$cookie'};
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/cart'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}cart'));
 
       request.headers.addAll(headers);
 
@@ -147,7 +147,7 @@ class _CartScreenState extends State<CartScreen> {
 
   deleteCart(String cartId) async {
     var headers = {'Cookie': 'restaurant_session=$cookie'};
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/delete_cart/$cartId'));
+    var request = http.Request('GET', Uri.parse('${apiBaseUrl}delete_cart/$cartId'));
 
     request.headers.addAll(headers);
 
@@ -173,7 +173,7 @@ class _CartScreenState extends State<CartScreen> {
       emptyCart = '';
     });
     var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
-    var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/add_to_cart'));
+    var request = http.Request('POST', Uri.parse('${apiBaseUrl}add_to_cart'));
     if (addonList.isNotEmpty) {
       for (int i = 0; i < addonList.length; i++) {
         setState(() {
@@ -273,7 +273,7 @@ class _CartScreenState extends State<CartScreen> {
 
       print(prefs.getString('selectedRestaurant').toString() + ' selectedRestaurant 123');
       var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/restaurants/${prefs.getString('selectedRestaurant')}'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}restaurants/${prefs.getString('selectedRestaurant')}'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
       final responseData = await response.stream.bytesToString();

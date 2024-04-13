@@ -1,7 +1,6 @@
 import 'package:figma_new_project/constants.dart';
 import 'package:figma_new_project/dashBoard/dashboard_screen.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 
 class AddCardScreen extends StatefulWidget {
   const AddCardScreen({Key? key}) : super(key: key);

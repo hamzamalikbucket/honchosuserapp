@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var request = http.Request(
           'POST',
           Uri.parse(
-              '${apiBaseUrl}api/login?email=${_emailAddressController.text.toString()}&password=${_passwordController.text.toString()}'));
+              '${apiBaseUrl}login?email=${_emailAddressController.text.toString()}&password=${_passwordController.text.toString()}'));
 
       request.headers.addAll(headers);
 
@@ -146,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
       'Cookie': 'restaurant_session=$cookie'
     };
     var request =
-        http.Request('POST', Uri.parse('${apiBaseUrl}api/get_session'));
+        http.Request('POST', Uri.parse('${apiBaseUrl}get_session'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     var headers = {'Cookie': 'restaurant_session=$cookie'};
     var request =
-        http.Request('GET', Uri.parse('${apiBaseUrl}api/users/$userId'));
+        http.Request('GET', Uri.parse('${apiBaseUrl}users/$userId'));
 
     request.headers.addAll(headers);
 

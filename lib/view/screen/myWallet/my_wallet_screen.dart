@@ -33,7 +33,7 @@ class _MyWalletScreenState extends State<MyWalletScreen> {
     var headers = {
       'Cookie': 'restaurant_session=$cookie'
     };
-    var request = http.MultipartRequest('GET', Uri.parse('${apiBaseUrl}api/flames'));
+    var request = http.MultipartRequest('GET', Uri.parse('${apiBaseUrl}flames'));
 
     request.headers.addAll(headers);
 

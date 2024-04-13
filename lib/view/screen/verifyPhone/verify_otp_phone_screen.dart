@@ -85,7 +85,7 @@ class _VerifyOtpPhoneScreenState extends State<VerifyOtpPhoneScreen> {
    var headers = {
      'Cookie': 'restaurant_session=$cookie'
    };
-   var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/otp_verified?otp=$currentText'));
+   var request = http.Request('POST', Uri.parse('${apiBaseUrl}otp_verified?otp=$currentText'));
 
    request.headers.addAll(headers);
 
@@ -141,7 +141,7 @@ class _VerifyOtpPhoneScreenState extends State<VerifyOtpPhoneScreen> {
      'Content-Type': 'application/json',
      'Cookie': 'restaurant_session=$cookie'
    };
-   var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/forgot_password?email=${widget.email.toString()}'));
+   var request = http.Request('POST', Uri.parse('${apiBaseUrl}forgot_password?email=${widget.email.toString()}'));
 
    request.headers.addAll(headers);
 

@@ -49,7 +49,7 @@ class HomeProvider extends ChangeNotifier {
         'Accept': 'application/json'
       };
 
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/categories'));
+      var request = http.Request('GET', Uri.parse('${baseUrlMain}api/categories'));
 
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
@@ -183,7 +183,7 @@ class HomeProvider extends ChangeNotifier {
         'Cookie': 'restaurant_session=$cookie'
       };
 
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/products'));
+      var request = http.Request('GET', Uri.parse('${baseUrlMain}api/products'));
 
 
 

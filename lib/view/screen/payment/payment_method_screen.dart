@@ -218,7 +218,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>  with SingleT
         'Content-Type': 'application/json',
         'Cookie': 'restaurant_session=$cookie'
       };
-      var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/order_create'));
+      var request = http.Request('POST', Uri.parse('${apiBaseUrl}order_create'));
       request.body = json.encode({
         "transaction_id": Random().nextInt(1000000).toString(),
         "restaurant_id": restaurantId,
@@ -332,7 +332,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>  with SingleT
       var headers = {
         'Cookie': 'restaurant_session=$cookie'
       };
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/cart'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}cart'));
 
       request.headers.addAll(headers);
 
@@ -476,7 +476,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>  with SingleT
       'Cookie': 'restaurant_session=$cookie'
     };
 
-    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}api/update_flame_status/$flameId'));
+    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}update_flame_status/$flameId'));
     request.fields.addAll({
       'status': 'Completed'
     });

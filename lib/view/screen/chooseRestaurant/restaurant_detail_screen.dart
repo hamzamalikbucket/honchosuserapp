@@ -229,7 +229,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                   height: size.height*0.3,
                   width: size.width,
                   fit: BoxFit.cover,
-                  imageUrl:  '${apiBaseUrl}image/restaurants/'+widget.image
+                  imageUrl:  '${baseUrlMain}image/restaurants/'+widget.image
                       .toString(),
                   //placeholder: (context, url) => CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Icon(Icons.error),

@@ -243,7 +243,7 @@ class _OrderPlacedScreenState extends State<OrderPlacedScreen> {
     int number = 0;
     do {
 
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/delete_cart/${widget.productList[number].cartId.toString()}'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}delete_cart/${widget.productList[number].cartId.toString()}'));
 
       request.headers.addAll(headers);
 

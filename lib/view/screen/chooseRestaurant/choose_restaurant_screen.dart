@@ -85,7 +85,7 @@ class _ChosseRestaurantScreenState extends State<ChosseRestaurantScreen> {
     //   print('my lat long $lat $long');
     // });
     var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
-    var request = http.Request('POST', Uri.parse('${apiBaseUrl}api/location_insert?longitude=${widget.lat}&latitude=${widget.long}'));
+    var request = http.Request('POST', Uri.parse('${baseUrlMain}api/location_insert?longitude=${widget.lat}&latitude=${widget.long}'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     final responseData = await response.stream.bytesToString();
@@ -143,7 +143,7 @@ class _ChosseRestaurantScreenState extends State<ChosseRestaurantScreen> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/restaurants/$id'));
+    var request = http.Request('GET', Uri.parse('${apiBaseUrl}restaurants/$id'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     final responseData = await response.stream.bytesToString();
@@ -301,7 +301,7 @@ class _ChosseRestaurantScreenState extends State<ChosseRestaurantScreen> {
 
   getRestaurants() async {
     var headers = {'Content-Type': 'application/json', 'Cookie': 'restaurant_session=$cookie'};
-    var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/restaurants'));
+    var request = http.Request('GET', Uri.parse('${apiBaseUrl}restaurants'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     final responseData = await response.stream.bytesToString();
@@ -425,7 +425,7 @@ class _ChosseRestaurantScreenState extends State<ChosseRestaurantScreen> {
     int number = 0;
     if (productList.isNotEmpty) {
       do {
-        var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/delete_cart/${productList[number].cartId.toString()}'));
+        var request = http.Request('GET', Uri.parse('${apiBaseUrl}delete_cart/${productList[number].cartId.toString()}'));
 
         request.headers.addAll(headers);
 
@@ -449,7 +449,7 @@ class _ChosseRestaurantScreenState extends State<ChosseRestaurantScreen> {
     try {
       var headers = {'Cookie': 'restaurant_session=$cookie'};
 
-      var request = http.Request('GET', Uri.parse('${apiBaseUrl}api/cart'));
+      var request = http.Request('GET', Uri.parse('${apiBaseUrl}cart'));
 
       request.headers.addAll(headers);
 
@@ -506,7 +506,7 @@ class _ChosseRestaurantScreenState extends State<ChosseRestaurantScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var headers = {'Cookie': 'restaurant_session=$cookie'};
-    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}api/get_delivery_fee'));
+    var request = http.MultipartRequest('POST', Uri.parse('${apiBaseUrl}get_delivery_fee'));
     request.fields.addAll({'distance': distance});
 
     request.headers.addAll(headers);
@@ -754,7 +754,7 @@ class _ChosseRestaurantScreenState extends State<ChosseRestaurantScreen> {
                                                 child: ClipRRect(
                                                   borderRadius: BorderRadius.circular(20),
                                                   child: Image.network(
-                                                    '${apiBaseUrl}image/restaurants/' + locationListWithDistance[index]['restaurantImage'].toString(),
+                                                    '${baseUrlMain}image/restaurants/' + locationListWithDistance[index]['restaurantImage'].toString(),
                                                     fit: BoxFit.cover,
                                                     height: size.height * 0.1,
                                                     width: size.width * 0.28,
